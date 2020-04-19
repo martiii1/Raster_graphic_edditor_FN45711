@@ -14,6 +14,7 @@ private:
     Session *fSessions;
     size_t fOpenSessions;
     unsigned int fNextSession;
+    unsigned int fCurrentSession;
 
 
     void newSession();
@@ -21,5 +22,7 @@ private:
     void CommandCaller();
 
     bool load(char *input);
+
+    bool add(char *input);
 };
 

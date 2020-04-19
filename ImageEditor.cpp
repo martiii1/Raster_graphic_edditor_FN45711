@@ -142,7 +142,7 @@ void ImageEditor::CommandCaller()
 
         }
 
-        if(strcmp(token, "help") == 0)         // BULLSHIT
+        if(strcmp(token, "help") == 0)         //
         {
 
 
@@ -162,14 +162,13 @@ bool ImageEditor::load(char *input)
     char* token;
     token = strtok(input, " "); // skips the first word
 
-    newSession();
-
     token = strtok(nullptr, " "); // if there is nothing after "load"
     if (token == nullptr)
     {
         return false;
     }
 
+    newSession();
     while (token != nullptr)
     {
         if(!fSessions[fNextSession].addImage(token))
@@ -180,5 +179,24 @@ bool ImageEditor::load(char *input)
 
     std::cout << std::endl;
 
+    fCurrentSession = fNextSession;
     fNextSession++;
+}
+
+bool ImageEditor::add(char *input) // Adds an image to the current session.
+{
+    char* token;
+    token = strtok(input, " "); // skips the first word
+
+    token = strtok(nullptr, " "); // if there is nothing after "add"
+    if (token == nullptr)
+    {
+        return false;
+    }
+
+    if(!fSessions[fCurrentSession].addImage(token))
+        return false;
+
+    std::cout << std::endl;
+    return true;
 }
