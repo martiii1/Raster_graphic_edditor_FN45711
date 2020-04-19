@@ -3,7 +3,7 @@
 #include<cstring>
 #include "ImageEdditor.hpp"
 
-unsigned int CurrentSession::fSize = 0;
+unsigned int Session::fSize = 0;
 //PPM, PGM and PBM
 
 
