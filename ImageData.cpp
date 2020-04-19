@@ -77,9 +77,15 @@ void ImageData::copyImage(const ImageData& otherImage)
 
 void ImageData::loadImage(char* FileName)
 {
-    ImageData();
-
-    fFileName = new(std::nothrow) char[strlen(FileName) + 1];// ///////////////////////////////////// this is nullptr error
+    fFileName = new(std::nothrow) char[strlen(FileName) + 1];
+    {
+        if(fFileName == nullptr)
+        {
+            std::cout << "Error while allocating memory! " << std::endl;
+            delImage();
+            return;
+        }
+    }
 
     strcpy(fFileName, FileName);
 

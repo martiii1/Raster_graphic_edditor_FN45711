@@ -2,25 +2,23 @@
 
 #define MAX_CONSOLE_COMMANDS_LENGTH 255
 
-Driver:: Driver()
+Driver::Driver()
 {
     fSessions = nullptr;
     fOpenSessions = 0;
-    fnextSession = 0;
+    fNextSession = 0;
 }
 
 void Driver::StartImageEditor()
 {
     fOpenSessions = 0;
 
-    char *consoleCommands = new char[MAX_CONSOLE_COMMANDS_LENGTH];
+    std::cout << "Raster graphic editor started." << std::endl;
 
-    std::cin.getline(consoleCommands, MAX_CONSOLE_COMMANDS_LENGTH);
-
-    CommandCaller(consoleCommands);
+    CommandCaller();
 
 
-    delete[] consoleCommands;
+
 }
 
 void Driver::newSession()
@@ -42,31 +40,138 @@ void Driver::newSession()
     fOpenSessions++;
 }
 
-void Driver::CommandCaller(char *command)
+void Driver::CommandCaller()
 {
-    char *token = strtok(command, " ");
-    while (token != nullptr)
+    char *consoleCommands = new char[MAX_CONSOLE_COMMANDS_LENGTH];
+    char *token;
+
+    bool correctInput = false;
+
+    while (!correctInput)
     {
-        if (strcmp(token, "load") == 0)
+        correctInput = true;
+
+        std::cout << "Please enter a command (max " << MAX_CONSOLE_COMMANDS_LENGTH << "symbols) " << std::endl;
+        std::cin.getline(consoleCommands, MAX_CONSOLE_COMMANDS_LENGTH);
+
+        token = strtok(consoleCommands, " ");
+        if (token == nullptr)
         {
+            correctInput = false;
+            std::cout << "Invalid input! Try again" << std::endl;
+            continue;
+        }
 
-            token = strtok(nullptr, " ");
-
-            newSession();
-            while (token != nullptr)
+        if (strcmp(token, "load") == 0)        // load is called
+        {
+            if(!load(consoleCommands))
             {
-                fSessions[sessionToOpen].addImage(token);
-                token = strtok(nullptr, " ");
+                std::cout << "Invalid input! Try again" << std::endl;
+                correctInput = false;
+                continue;
             }
-
-
-            sessionToOpen++;
         }
 
 
-        break;
-        token = strtok(NULL, " ");
+        if(strcmp(token, "grayscale") == 0)    // grayscale is called
+        {
+
+
+        }
+
+        if(strcmp(token, "monochrome") == 0)   // monochrome is called
+        {
+
+
+        }
+
+        if(strcmp(token, "negative") == 0)     // negative is called
+        {
+
+
+        }
+
+        if(strcmp(token, "rotate") == 0)       // rotate is called
+        {
+
+
+        }
+
+        if(strcmp(token, "undo") == 0)         // undo is called
+        {
+
+
+        }
+
+        if(strcmp(token, "add") == 0)          // add is called
+        {
+
+
+        }
+
+        if(strcmp(token, "session") == 0)      // session is called
+        {
+
+
+        }
+
+        if(strcmp(token, "switch") == 0)       // switch is called
+        {
+
+
+        }
+
+        if(strcmp(token, "collage") == 0)      // collage  is called
+        {
+
+
+        }
+
+        if(strcmp(token, "close") == 0)        // close  is called
+        {
+
+
+        }
+
+        if(strcmp(token, "save") == 0)         // close  is called
+        {
+            //add save as
+
+
+        }
+
+        if(strcmp(token, "help") == 0)         // BULLSHIT
+        {
+
+
+        }
+
+
+
+
+
+    } // end of while
+
+    delete[] consoleCommands;
+}
+
+bool Driver::load(char *input)
+{
+    char* token;
+    token = strtok(input, " "); // skips the first word
+
+    token = strtok(nullptr, " ");
+    if(token == nullptr)
+    {
+       return false;
+    }
+    newSession();
+    while (token != nullptr)
+    {
+        fSessions[fNextSession].addImage(token);
+        token = strtok(nullptr, " ");
     }
 
 
+    fNextSession++;
 }

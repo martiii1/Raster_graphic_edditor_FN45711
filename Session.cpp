@@ -1,26 +1,44 @@
 #include "Session.hpp"
 #include "ImageData.hpp"
 #include <fstream>
-#include<cstring>
+#include <cstring>
 
 
-void Session::copyFunc(const Session& other)
+void Session::copyFunc(const Session &other)
 {
     fImages = new(std::nothrow) ImageData[other.fSize];
-    if (fImages == nullptr)
+    fChangesMade = new(std::nothrow) char *[other.fNumberOfChanges];
+
+    if (fImages == nullptr || fChangesMade == nullptr)
     {
-        std::cout << "Not enough memory"; //////////////////////////////////////////////MAYBE ?
+        std::cout << "Not enough memory";
+        delMem();
         return;
     }
 
+    for (int i = 0; i < other.fNumberOfChanges; i++)
+    {
+        fChangesMade[i] = new(std::nothrow) char[strlen(other.fChangesMade[i]) + 1];
+        if (fChangesMade[i] == nullptr)
+        {
+            std::cout << "Not enough memory";
+            delMem();
+            return;
+        }
+
+        strcpy(fChangesMade[i], other.fChangesMade[i]);
+    }
 
     for (unsigned int i = 0; i < other.fSize; i++)
     {
         fImages[i] = other.fImages[i];
     }
 
-    fCapacity = other.fCapacity;
+    fSize = other.fSize;
     fSessionID = other.fSessionID;
+    fNumberOfChanges = other.fNumberOfChanges;
+    fCapacity = other.fCapacity;
+    fSessionIsOpen = other.fSessionIsOpen;
 }
 
 
@@ -29,20 +47,24 @@ void Session::delMem()
     for (unsigned int i = 0; i < fSize; i++)
         fImages[i].~ImageData();
 
+    for (int i = 0; i < fNumberOfChanges; i++)
+        delete[] fChangesMade[i];
+
+    delete[] fChangesMade;
     delete[] fImages;
 }
 
 void Session::changesInitializer()
 {
-    fChangesMade = new(std::nothrow) char* [CHANGES_BUFFER];
-    if(fChangesMade == nullptr)
+    fChangesMade = new(std::nothrow) char *[CHANGES_BUFFER];
+    if (fChangesMade == nullptr)
     {
         std::cout << "Memory fail(for changes)!" << std::endl;
         return;
     }
 
     for (int i = 0; i < CHANGES_BUFFER; i++)
-        fChangesMade[i] = new(std::nothrow) char[MAX_COMMANG_LENGTH];
+        fChangesMade[i] = new(std::nothrow) char[MAX_COMMAND_LENGTH];
     if (fChangesMade == nullptr);
     // TO DO ...........................................................//// TODO
 
@@ -51,7 +73,7 @@ void Session::changesInitializer()
 
 void Session::resizeSession()
 {
-    ImageData* tempImages = new(std::nothrow) ImageData[fCapacity*2];
+    ImageData *tempImages = new(std::nothrow) ImageData[fCapacity * 2];
     if (tempImages == nullptr)
     {
         std::cout << "Error while allocating memory for bigger session! " << std::endl;
@@ -68,7 +90,7 @@ void Session::resizeSession()
     fImages = tempImages;
 }
 
-void Session::addImage(char* name)
+void Session::addImage(char *name)
 {
     if (fSize == fCapacity)
         resizeSession();
@@ -79,47 +101,50 @@ void Session::addImage(char* name)
 }
 
 
-Session::CurrentSession() : ImageData()// ???????????????
+Session::Session()
 {
-
+    fSize = 0;
+    fSessionID = -1;
+    fChangesMade = nullptr;
+    fNumberOfChanges = 0;
     fCapacity = initialCapacity;
     fImages = nullptr;
-    fSessionID = -1;
+    fSessionIsOpen = false;
 }
 
-Session::CurrentSession(char* imageNames) //////////////////////////////////////////////////// WTF
-{
-    fCapacity = initialCapacity;
-    fImages = new (std::nothrow) ImageData[fCapacity];
-    fSessionID = -1;
+//Session::Session(char* imageNames) //////////////////////////////////////////////////// WTF
+//{
+//    fCapacity = initialCapacity;
+//    fImages = new (std::nothrow) ImageData[fCapacity];
+//    fSessionID = -1;
+//
+//    if (fImages == nullptr)
+//    {
+//        std::cout << "Error while allocating memory, deleting session! " << std::endl;
+//        delMem();
+//        return;
+//    }
+//
+//
+//    char* token = strtok(imageNames, " ");
+//    if (strcmp(token, "load") == 0)
+//        token = strtok(NULL, " ");
+//
+//    while (token != nullptr)
+//    {
+//        addImage(token);
+//        token = strtok(nullptr, " "); /// MAYBE VALIDATE FILE NAMES
+//    }
+//
+//}
 
-    if (fImages == nullptr)
-    {
-        std::cout << "Error while allocating memory, deleting session! " << std::endl;
-        delMem();
-        return;
-    }
-
-
-    char* token = strtok(imageNames, " ");
-    if (strcmp(token, "load") == 0)
-        token = strtok(NULL, " ");
-
-    while (token != NULL)
-    {
-        addImage(token);
-        token = strtok(NULL, " "); /// MAYBE VALIDATE FILE NAMES
-    }
-
-}
-
-Session::CurrentSession(const Session& other)
+Session::Session(const Session &other)
 {
     copyFunc(other);
 }
 
 
-Session& Session::operator=(const Session other)
+Session &Session::operator=(const Session other)
 {
     if (this != &other)
     {
@@ -130,7 +155,7 @@ Session& Session::operator=(const Session other)
     return *this;
 }
 
-Session::~CurrentSession()
+Session::~Session()
 {
     //std::cout << "Current Session Destruct \n";
 
@@ -139,6 +164,6 @@ Session::~CurrentSession()
         {
             fImages[i].~ImageData();
         }*/
-    delete[] fImages;
 
+    delete[] fImages;
 }
