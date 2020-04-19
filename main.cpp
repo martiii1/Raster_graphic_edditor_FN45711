@@ -1,4 +1,4 @@
-#include "ImageEdditor.hpp"
+#include "ImageEditor.hpp"
 
 unsigned int Session::fSize = 0;
 //PPM, PGM and PBM
@@ -6,7 +6,7 @@ unsigned int Session::fSize = 0;
     int main()
     {
 
-        Driver asd;
+        ImageEditor asd;
         asd.StartImageEditor();
 
         return 0;

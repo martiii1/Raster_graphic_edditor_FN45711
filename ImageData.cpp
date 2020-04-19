@@ -13,19 +13,20 @@ ImageData::ImageData()
     fPixelMaxValues = 0;
     //char* fImageComments;
     fImageMatrix = nullptr;
+
 }
 
-ImageData::ImageData(char* FileName)
+ImageData::ImageData(char *FileName)
 {
     loadImage(FileName);
 }
 
-ImageData::ImageData(const ImageData& other)
+ImageData::ImageData(const ImageData &other)
 {
     copyImage(other);
 }
 
-ImageData& ImageData::operator=(const ImageData& other)
+ImageData &ImageData::operator=(const ImageData &other)
 {
     if (this != &other)
     {
@@ -41,7 +42,7 @@ ImageData::~ImageData()
     delImage();
 }
 
-char* ImageData::getFileName()
+char *ImageData::getFileName()
 {
     char tempName[MAX_FILE_NAME_SIZE];
     strcpy(tempName, fFileName);
@@ -49,7 +50,7 @@ char* ImageData::getFileName()
     return tempName;
 }
 
-void ImageData::copyImage(const ImageData& otherImage)
+void ImageData::copyImage(const ImageData &otherImage)
 {
     fImageFormat = otherImage.fImageFormat;
     fImageWidth = otherImage.fImageWidth;
@@ -58,16 +59,19 @@ void ImageData::copyImage(const ImageData& otherImage)
 
     if (fImageFormat == PPMA)
     {
-        fImageMatrix = allocateMatrix(fImageWidth*3, fImageHeight); // width *3 beacuse of RGB
+        fImageMatrix = allocateMatrix(fImageWidth * 3, fImageHeight); // width *3 because of RGB
 
         for (unsigned int i = 0; i < fImageHeight; i++)
-            for (unsigned int j = 0; j < fImageWidth*3; j++) // width *3 beacuse of RGB
+            for (unsigned int j = 0; j < fImageWidth * 3; j++) // width *3 because of RGB
                 fImageMatrix[i][j] = otherImage.fImageMatrix[i][j];
     }
     else
     {
 
         fImageMatrix = allocateMatrix(fImageWidth, fImageHeight);
+        if (fImageMatrix == nullptr)
+            return;
+
 
         for (unsigned int i = 0; i < fImageHeight; i++)
             for (unsigned int j = 0; j < fImageWidth; j++)
@@ -75,15 +79,15 @@ void ImageData::copyImage(const ImageData& otherImage)
     }
 }
 
-void ImageData::loadImage(char* FileName)
+bool ImageData::loadImage(char *FileName)
 {
     fFileName = new(std::nothrow) char[strlen(FileName) + 1];
     {
-        if(fFileName == nullptr)
+        if (fFileName == nullptr)
         {
             std::cout << "Error while allocating memory! " << std::endl;
             delImage();
-            return;
+            return false;
         }
     }
 
@@ -95,7 +99,8 @@ void ImageData::loadImage(char* FileName)
     {
         std::cout << "Can't open the file!" << std::endl;
         image.close();
-        return;
+        delImage();
+        return false;
     }
 
     switch (getImageFormat(image))
@@ -118,13 +123,17 @@ void ImageData::loadImage(char* FileName)
             image.close();
             delImage();
     }
-
     image.close();
+
+    if(fImageFormat == BROKEN)
+        return false;
+
+    return true;
 }
 
 void ImageData::delImage()
 {
-    if(fImageMatrix != nullptr)
+    if (fImageMatrix != nullptr)
         for (unsigned int i = 0; i < fImageHeight; i++)
         {
             delete[] fImageMatrix[i];
@@ -132,27 +141,28 @@ void ImageData::delImage()
 
     delete[] fFileName;
     delete[] fImageMatrix;
-
+    fImageFormat = BROKEN;
 }
 
 void ImageData::readPBMA(std::ifstream &file)
 {
     skipComments(file);
 
-    getDimentions(file);
+    getDimensions(file);
 
     fImageMatrix = allocateMatrix(fImageWidth, fImageHeight);
 
     getPBMApixels(file);
 
-    //std::cout <<fFileName<<"   " << fImageFormat << "   " << fImageWidth << "   " << fImageHeight << "   " << fPixelMaxValues;
+    std::cout << fFileName << "   " << fImageFormat << "   " << fImageWidth << "   " << fImageHeight << "   "
+              << fPixelMaxValues; // TODO !
 }
 
 void ImageData::readPGMA(std::ifstream &file)
 {
     skipComments(file);
 
-    getDimentions(file);
+    getDimensions(file);
 
     getPixelMaxValues(file);
 
@@ -161,21 +171,21 @@ void ImageData::readPGMA(std::ifstream &file)
     getPGMApixels(file);
 }
 
-void ImageData::readPPMA(std::ifstream& file)
+void ImageData::readPPMA(std::ifstream &file)
 {
     skipComments(file);
 
-    getDimentions(file);
+    getDimensions(file);
 
     getPixelMaxValues(file);
 
-    fImageMatrix = allocateMatrix(fImageWidth*3, fImageHeight);
+    fImageMatrix = allocateMatrix(fImageWidth * 3, fImageHeight);
 
     getPPMApixels(file);
 }
 
 
-void ImageData::getDimentions(std::ifstream &file)
+void ImageData::getDimensions(std::ifstream &file)
 {
     char c;
     file.get(c);
@@ -190,7 +200,7 @@ void ImageData::getDimentions(std::ifstream &file)
     file >> fImageWidth >> fImageHeight;
 }
 
-void ImageData::getPixelMaxValues(std::ifstream& file)
+void ImageData::getPixelMaxValues(std::ifstream &file)
 {
     skipComments(file);
 
@@ -198,7 +208,7 @@ void ImageData::getPixelMaxValues(std::ifstream& file)
 
     file >> maxPixel;
 
-    if(fImageFormat == PPMA)
+    if (fImageFormat == PPMA)
         if (maxPixel > 255)
         {
             std::cout << "Unknown image format! " << std::endl;
@@ -250,7 +260,7 @@ void ImageData::getPBMApixels(std::ifstream &file)
 }
 
 
-void ImageData::getPGMApixels(std::ifstream& file)
+void ImageData::getPGMApixels(std::ifstream &file)
 {
 
     char c;
@@ -296,7 +306,7 @@ void ImageData::getPGMApixels(std::ifstream& file)
     }
 }
 
-void ImageData::getPPMApixels(std::ifstream& file)
+void ImageData::getPPMApixels(std::ifstream &file)
 {
     char c;
     unsigned int pixel;
@@ -316,7 +326,7 @@ void ImageData::getPPMApixels(std::ifstream& file)
             std::cout << fImageMatrix[row][col] << "  "; // DELETE COUT
 
             col++;
-            if (col == fImageWidth*3)
+            if (col == fImageWidth * 3)
             {
                 row++;
 
@@ -341,14 +351,14 @@ void ImageData::getPPMApixels(std::ifstream& file)
     }
 }
 
-size_t ImageData::getImageFormat(std::ifstream& file)
+size_t ImageData::getImageFormat(std::ifstream &file)
 {
     char temp[3];  // for 'P' + NUMBER + \n
-    skipComments(file);
-    file >> temp;
-    size_t tempFormat;
+    skipComments(file); // Skips comments if there are any
 
-    if (!(temp[0] == 'P' && temp[1] >= '1' && temp[1] <= '3'))  // Validating image format
+    file >> temp;
+
+    if (!(temp[0] == 'P' && (temp[1] >= '1' && temp[1] <= '3')))  // Validating image format
     {
         std::cout << "Unsupported file type! " << std::endl;
         file.close();
@@ -356,10 +366,10 @@ size_t ImageData::getImageFormat(std::ifstream& file)
         return -1;
     }
 
-    return(temp[1] - '0');
+    return (temp[1] - '0');
 }
 
-void ImageData::skipComments(std::ifstream& file)
+void ImageData::skipComments(std::ifstream &file)
 {
     char c;
 
@@ -385,9 +395,9 @@ void ImageData::skipComments(std::ifstream& file)
     file.putback(c);
 }
 
-int** ImageData::allocateMatrix(unsigned int width, unsigned int height)
+int **ImageData::allocateMatrix(unsigned int width, unsigned int height)
 {
-    int** Matrix = new(std::nothrow) int* [height];
+    int **Matrix = new(std::nothrow) int *[height];
     if (Matrix == nullptr)
     {
         std::cout << "Error while allocating memory!" << std::endl;

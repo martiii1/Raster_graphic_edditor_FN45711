@@ -1,15 +1,15 @@
-#include "ImageEdditor.hpp"
+#include "ImageEditor.hpp"
 
 #define MAX_CONSOLE_COMMANDS_LENGTH 255
 
-Driver::Driver()
+ImageEditor::ImageEditor()
 {
     fSessions = nullptr;
     fOpenSessions = 0;
     fNextSession = 0;
 }
 
-void Driver::StartImageEditor()
+void ImageEditor::StartImageEditor()
 {
     fOpenSessions = 0;
 
@@ -21,7 +21,7 @@ void Driver::StartImageEditor()
 
 }
 
-void Driver::newSession()
+void ImageEditor::newSession()
 {
     Session *tempSessions = new(std::nothrow) Session[fOpenSessions + 1];
     if (tempSessions == nullptr)
@@ -37,10 +37,12 @@ void Driver::newSession()
     }
 
     fSessions = tempSessions;
+    fSessions[fOpenSessions].setOpen();
+
     fOpenSessions++;
 }
 
-void Driver::CommandCaller()
+void ImageEditor::CommandCaller()
 {
     char *consoleCommands = new char[MAX_CONSOLE_COMMANDS_LENGTH];
     char *token;
@@ -155,23 +157,28 @@ void Driver::CommandCaller()
     delete[] consoleCommands;
 }
 
-bool Driver::load(char *input)
+bool ImageEditor::load(char *input)
 {
     char* token;
     token = strtok(input, " "); // skips the first word
 
-    token = strtok(nullptr, " ");
-    if(token == nullptr)
-    {
-       return false;
-    }
     newSession();
+
+    token = strtok(nullptr, " "); // if there is nothing after "load"
+    if (token == nullptr)
+    {
+        return false;
+    }
+
     while (token != nullptr)
     {
-        fSessions[fNextSession].addImage(token);
+        if(!fSessions[fNextSession].addImage(token))
+            return false;
+
         token = strtok(nullptr, " ");
     }
 
+    std::cout << std::endl;
 
     fNextSession++;
 }

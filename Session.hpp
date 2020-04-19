@@ -1,4 +1,5 @@
 #pragma once
+
 #include "ImageData.hpp"
 
 #define CHANGES_BUFFER 10
@@ -10,27 +11,35 @@ class Session
 {
 public:
     Session();
+
     //Session(char* imageNames);
-    Session(const Session& other);
-    Session& operator= (const Session other);
+    Session(const Session &other);
+
+    Session &operator=(const Session other);
+
     ~Session();
-    void addImage(char* name);
 
+    bool addImage(char *name);
 
+    void setOpen();
+    void setClose();
 
 private:
     static unsigned int fSize;
     int fSessionID;
-    char** fChangesMade;
+    char **fChangesMade;
     unsigned short int fNumberOfChanges;
     unsigned int fCapacity;
-    ImageData* fImages;
+    ImageData *fImages;
     bool fSessionIsOpen;
 
 
-    void copyFunc(const Session& other);
+    void copyFunc(const Session &other);
+
     void delMem();
+
     void changesInitializer();
+
     void resizeSession();
 };
 

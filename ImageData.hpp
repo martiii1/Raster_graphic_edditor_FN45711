@@ -1,5 +1,6 @@
 #pragma once
 #pragma warning(disable:4996)
+
 #include <iostream>
 #include <fstream>
 
@@ -16,46 +17,49 @@ class ImageData
 {
 public:
     ImageData();
-    ImageData(char* FileName);
-    ImageData(const ImageData& other);
-    ImageData& operator= (const ImageData& other);
-
+    ImageData(char *FileName);
+    ImageData(const ImageData &other);
+    ImageData &operator=(const ImageData &other);
     ~ImageData();
 
-    char* getFileName();
-
-    void loadImage(char* FileName);
+    char *getFileName();
+    bool loadImage(char *FileName);
     void delImage();
 
 
 protected:
-    char* fFileName;
+    char *fFileName;
     unsigned short int fImageFormat;
     unsigned int fImageWidth;
     unsigned int fImageHeight;
     unsigned int fPixelMaxValues;
     //char* fImageComments;
-    int** fImageMatrix; // unsigned
+    int **fImageMatrix; // unsigned TODO
 
 
 
 private:
-    void copyImage(const ImageData& otherImage);
+    void copyImage(const ImageData &otherImage);
+
     void readPBMA(std::ifstream &file);
-    void readPGMA(std::ifstream	&file);
-    void readPPMA(std::ifstream& file);
 
-    void getDimentions(std::ifstream &file);
+    void readPGMA(std::ifstream &file);
 
-    void getPixelMaxValues(std::ifstream& file);//
+    void readPPMA(std::ifstream &file);
+
+    void getDimensions(std::ifstream &file);
+
+    void getPixelMaxValues(std::ifstream &file);
 
     void getPBMApixels(std::ifstream &file);
-    void getPGMApixels(std::ifstream& file);
-    void getPPMApixels(std::ifstream& file);
 
-    size_t getImageFormat(std::ifstream& file);
+    void getPGMApixels(std::ifstream &file);
+
+    void getPPMApixels(std::ifstream &file);
+
+    size_t getImageFormat(std::ifstream &file);
 
     void skipComments(std::ifstream &file);
 
-    int** allocateMatrix(unsigned int width, unsigned int height);
+    int **allocateMatrix(unsigned int width, unsigned int height);
 };

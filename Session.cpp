@@ -90,14 +90,19 @@ void Session::resizeSession()
     fImages = tempImages;
 }
 
-void Session::addImage(char *name)
+bool Session::addImage(char *name)
 {
     if (fSize == fCapacity)
         resizeSession();
 
-    fImages[fSize].loadImage(name);
+    if(!fImages[fSize].loadImage(name))
+    {
+        return false;
+    }
     //if(fImages[fSize].fImageFormat != BROKEN)//// TODO
+    std::cout << fImages[fSize].getFileName() << " successfully loaded,  ";
     fSize++;
+    return true;
 }
 
 
@@ -166,4 +171,14 @@ Session::~Session()
         }*/
 
     delete[] fImages;
+}
+
+void Session::setOpen()
+{
+    fSessionIsOpen = true;
+}
+
+void Session::setClose()
+{
+    fSessionIsOpen = false;
 }

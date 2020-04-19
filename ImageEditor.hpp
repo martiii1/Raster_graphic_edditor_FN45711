@@ -1,23 +1,25 @@
 #pragma once
+
 #include "Session.hpp"
 
 
-class Driver
+class ImageEditor
 {
 public:
-    Driver();
+    ImageEditor();
 
     void StartImageEditor();
 
 private:
-    Session* fSessions;
+    Session *fSessions;
     size_t fOpenSessions;
-    unsigned int fNextSession = 0;
+    unsigned int fNextSession;
 
 
     void newSession();
+
     void CommandCaller();
 
-    bool load(char* input);
+    bool load(char *input);
 };
 
