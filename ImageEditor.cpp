@@ -7,11 +7,13 @@ ImageEditor::ImageEditor()
     fSessions = nullptr;
     fOpenSessions = 0;
     fNextSession = 0;
+    fCurrentSession = 0;
 }
 
 void ImageEditor::StartImageEditor()
 {
     fOpenSessions = 0;
+    fNextSession = 0;
 
     std::cout << "Raster graphic editor started." << std::endl;
 
@@ -38,6 +40,7 @@ void ImageEditor::newSession()
 
     fSessions = tempSessions;
     fSessions[fOpenSessions].setOpen();
+    fSessions[fOpenSessions].setSessionID(fNextSession);
 
     fOpenSessions++;
 }
@@ -45,6 +48,7 @@ void ImageEditor::newSession()
 void ImageEditor::CommandCaller()
 {
     char *consoleCommands = new char[MAX_CONSOLE_COMMANDS_LENGTH];
+    char *consoleCommandsLine = new char[MAX_CONSOLE_COMMANDS_LENGTH];
     char *token;
 
     bool correctInput = false;
@@ -53,8 +57,9 @@ void ImageEditor::CommandCaller()
     {
         correctInput = true;
 
-        std::cout << "Please enter a command (max " << MAX_CONSOLE_COMMANDS_LENGTH << "symbols) " << std::endl;
+        std::cout << "Please enter a command (max " << MAX_CONSOLE_COMMANDS_LENGTH << " symbols) " << std::endl;
         std::cin.getline(consoleCommands, MAX_CONSOLE_COMMANDS_LENGTH);
+        strcpy(consoleCommandsLine,consoleCommands);
 
         token = strtok(consoleCommands, " ");
         if (token == nullptr)
@@ -66,7 +71,7 @@ void ImageEditor::CommandCaller()
 
         if (strcmp(token, "load") == 0)        // load is called
         {
-            if(!load(consoleCommands))
+            if(!load(consoleCommandsLine))
             {
                 std::cout << "Invalid input! Try again" << std::endl;
                 correctInput = false;
@@ -169,6 +174,7 @@ bool ImageEditor::load(char *input)
     }
 
     newSession();
+
     while (token != nullptr)
     {
         if(!fSessions[fNextSession].addImage(token))

@@ -92,15 +92,22 @@ void Session::resizeSession()
 
 bool Session::addImage(char *name)
 {
+    if(fImages == nullptr)
+        fImages = new(std::nothrow) ImageData[fCapacity];
+
     if (fSize == fCapacity)
         resizeSession();
+
+
 
     if(!fImages[fSize].loadImage(name))
     {
         return false;
     }
-    //if(fImages[fSize].fImageFormat != BROKEN)//// TODO
-    std::cout << fImages[fSize].getFileName() << " successfully loaded,  ";
+    //if(fImages[fSize].getimagestatst == BROKEN)       TODO!!!!!!
+        //return true;
+
+    std::cout <<fImages[fSize].getFileName()<< " successfully loaded,  ";
     fSize++;
     return true;
 }
@@ -181,4 +188,9 @@ void Session::setOpen()
 void Session::setClose()
 {
     fSessionIsOpen = false;
+}
+
+void Session::setSessionID(int newID)
+{
+    fSessionID = newID;
 }

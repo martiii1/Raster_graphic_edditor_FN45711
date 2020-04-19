@@ -44,10 +44,7 @@ ImageData::~ImageData()
 
 char *ImageData::getFileName()
 {
-    char tempName[MAX_FILE_NAME_SIZE];
-    strcpy(tempName, fFileName);
-
-    return tempName;
+    return fFileName;
 }
 
 void ImageData::copyImage(const ImageData &otherImage)
@@ -81,6 +78,7 @@ void ImageData::copyImage(const ImageData &otherImage)
 
 bool ImageData::loadImage(char *FileName)
 {
+
     fFileName = new(std::nothrow) char[strlen(FileName) + 1];
     {
         if (fFileName == nullptr)
@@ -154,8 +152,8 @@ void ImageData::readPBMA(std::ifstream &file)
 
     getPBMApixels(file);
 
-    std::cout << fFileName << "   " << fImageFormat << "   " << fImageWidth << "   " << fImageHeight << "   "
-              << fPixelMaxValues; // TODO !
+    //std::cout << fFileName << "   " << fImageFormat << "   " << fImageWidth << "   " << fImageHeight << "   "
+              //<< fPixelMaxValues; // TODO !
 }
 
 void ImageData::readPGMA(std::ifstream &file)

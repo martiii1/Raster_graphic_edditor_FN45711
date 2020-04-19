@@ -24,6 +24,8 @@ public:
     void setOpen();
     void setClose();
 
+    void setSessionID(int newID);
+
 private:
     static unsigned int fSize;
     int fSessionID;
