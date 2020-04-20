@@ -103,7 +103,7 @@ bool Session::addImage(char *name)
         return false;
     }
     //if(fImages[fSize].getimagestatst == BROKEN)       TODO!!!!!!
-        //return true;
+        //return true;***
 
     std::cout <<fImages[fSize].getFileName()<< " successfully loaded,  ";
     fSize++;
@@ -210,4 +210,8 @@ void Session::printSessionInfo() const
 void Session::setSize(unsigned int size)
 {
     fSize = size;
+}
+int Session::getSessionID() const
+{
+    return fSessionID;
 }

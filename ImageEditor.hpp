@@ -26,5 +26,7 @@ private:
     bool load(char *input);
 
     bool add(char *input);
+
+    bool switchSession(int sessionID);
 };
 

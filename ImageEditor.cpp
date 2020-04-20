@@ -24,26 +24,30 @@ void ImageEditor::StartImageEditor()
 
 void ImageEditor::newSession()
 {
-    Session *tempSessions = new(std::nothrow) Session[fOpenSessions + 1];
+    Session *tempSessions = new(std::nothrow) Session[fNextSession + 1];
     if (tempSessions == nullptr)
     {
         std::cout << "Error while adding a session! " << std::endl;
         return;
     }
 
-    for (size_t i = 0; i < fOpenSessions; i++)
+    for (size_t i = 0; i < fNextSession; i++)
     {
+        if(!fSessions[i].isSessionOpen())
+            continue;
+
         tempSessions[i] = fSessions[i];
         fSessions[i].~Session();
     }
 
 
     fSessions = tempSessions;
-    fSessions[fOpenSessions].setSize(0);
-    fSessions[fOpenSessions].setOpen();
-    fSessions[fOpenSessions].setSessionID(fNextSession);
+    fSessions[fNextSession].setSize(0);
+    fSessions[fNextSession].setOpen();
+    fSessions[fNextSession].setSessionID(fNextSession);
 
-    fOpenSessions++;
+    std::cout << std::endl << std::endl << "Session with ID:" << fSessions[fNextSession].getSessionID()
+    << " started." << std::endl;
 }
 
 void ImageEditor::CommandCaller()
@@ -173,18 +177,17 @@ bool ImageEditor::load(char *input)
     }
 
     newSession();
+    fCurrentSession = fNextSession;
 
     while (token != nullptr)
     {
-        if (!fSessions[fNextSession].addImage(token))
+        if (!fSessions[fCurrentSession].addImage(token))
             return false;
 
         token = strtok(nullptr, " ");
     }
-
     std::cout << std::endl;
 
-    fCurrentSession = fNextSession;
     fNextSession++;
 }
 
@@ -219,5 +222,18 @@ void ImageEditor::showAllSessions()
 
         counter++;
     }
+
+}
+
+bool ImageEditor::switchSession(int sessionID)
+{
+    if(fSessions[sessionID].isSessionOpen())
+    {
+        fCurrentSession = sessionID;
+        std::cout << "Session with ID: " << sessionID <<" is loaded! " << std::endl;
+        return true;
+    }
+
+    return false;
 
 }
