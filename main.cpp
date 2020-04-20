@@ -1,6 +1,5 @@
 #include "ImageEditor.hpp"
 
-unsigned int Session::fSize = 0;
 //PPM, PGM and PBM
 
     int main()
@@ -8,6 +7,7 @@ unsigned int Session::fSize = 0;
 
         ImageEditor asd;
         asd.StartImageEditor();
+
 
         return 0;
     }

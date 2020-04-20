@@ -54,6 +54,15 @@ void ImageData::copyImage(const ImageData &otherImage)
     fImageHeight = otherImage.fImageHeight;
     fPixelMaxValues = otherImage.fPixelMaxValues;
 
+    fFileName = new(std::nothrow) char[strlen(otherImage.fFileName) + 1];
+    if(fFileName == nullptr)
+    {
+        std::cout << "Not enough memory! " << std::endl;
+        delImage();
+        return;
+    }
+    strcpy(fFileName,otherImage.fFileName);
+
     if (fImageFormat == PPMA)
     {
         fImageMatrix = allocateMatrix(fImageWidth * 3, fImageHeight); // width *3 because of RGB
@@ -97,7 +106,7 @@ bool ImageData::loadImage(char *FileName)
     {
         std::cout << "Can't open the file!" << std::endl;
         image.close();
-        delImage();
+        //delImage();
         return false;
     }
 
@@ -189,7 +198,7 @@ void ImageData::getDimensions(std::ifstream &file)
     file.get(c);
     if (c < '0' || c > '9') // if the new line starts with a number/digit
     {
-        std::cout << "Error while reading image dimentions! " << std::endl;
+        std::cout << "Error while reading image dimensions! " << std::endl;
         delImage();
         return;
     }
@@ -229,7 +238,7 @@ void ImageData::getPBMApixels(std::ifstream &file)
 
             fImageMatrix[row][col] = c - '0';
 
-            std::cout << fImageMatrix[row][col] << "  "; // DELETE COUT
+            //std::cout << fImageMatrix[row][col] << "  "; // DELETE COUT
 
             col++;
             if (col == fImageWidth)
@@ -240,7 +249,7 @@ void ImageData::getPBMApixels(std::ifstream &file)
                     break;
 
                 col = 0;
-                std::cout << std::endl; // DELETE COUT
+                //std::cout << std::endl; // DELETE COUT
             }
         }
         else if (c == ' ' || c == '\n') // Ignores whitespaces
@@ -276,7 +285,7 @@ void ImageData::getPGMApixels(std::ifstream &file)
 
             fImageMatrix[row][col] = pixel;
 
-            std::cout << fImageMatrix[row][col] << "  "; // DELETE COUT
+            //std::cout << fImageMatrix[row][col] << "  "; // DELETE COUT
 
             col++;
             if (col == fImageWidth)
@@ -287,7 +296,7 @@ void ImageData::getPGMApixels(std::ifstream &file)
                     break;
 
                 col = 0;
-                std::cout << std::endl; // DELETE COUT
+                //std::cout << std::endl; // DELETE COUT
             }
         }
         else if (c == ' ' || c == '\n') // Ignores whitespaces
@@ -321,7 +330,7 @@ void ImageData::getPPMApixels(std::ifstream &file)
 
             fImageMatrix[row][col] = pixel;
 
-            std::cout << fImageMatrix[row][col] << "  "; // DELETE COUT
+            //std::cout << fImageMatrix[row][col] << "  "; // DELETE COUT
 
             col++;
             if (col == fImageWidth * 3)
@@ -332,7 +341,7 @@ void ImageData::getPPMApixels(std::ifstream &file)
                     break;
 
                 col = 0;
-                std::cout << std::endl; // DELETE COUT
+                //std::cout << std::endl; // DELETE COUT
             }
         }
         else if (c == ' ' || c == '\n') // Ignores whitespaces

@@ -10,6 +10,8 @@ public:
 
     void StartImageEditor();
 
+    void showAllSessions();
+
 private:
     Session *fSessions;
     size_t fOpenSessions;

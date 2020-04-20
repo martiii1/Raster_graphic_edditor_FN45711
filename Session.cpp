@@ -11,7 +11,7 @@ void Session::copyFunc(const Session &other)
 
     if (fImages == nullptr || fChangesMade == nullptr)
     {
-        std::cout << "Not enough memory";
+        std::cout << "Not enough memory" << std::endl;
         delMem();
         return;
     }
@@ -93,12 +93,10 @@ void Session::resizeSession()
 bool Session::addImage(char *name)
 {
     if(fImages == nullptr)
-        fImages = new(std::nothrow) ImageData[fCapacity];
+        fImages = new(std::nothrow) ImageData[fCapacity]; // TODO
 
     if (fSize == fCapacity)
         resizeSession();
-
-
 
     if(!fImages[fSize].loadImage(name))
     {
@@ -193,4 +191,23 @@ void Session::setClose()
 void Session::setSessionID(int newID)
 {
     fSessionID = newID;
+}
+
+bool Session::isSessionOpen() const
+{
+    return fSessionIsOpen;
+}
+
+void Session::printSessionInfo() const
+{
+    for(int i=0;i<fSize;i++)
+    {
+        std::cout << fImages[i].getFileName() << "is in Session " << fSessionID << std::endl;
+
+    }
+}
+
+void Session::setSize(unsigned int size)
+{
+    fSize = size;
 }

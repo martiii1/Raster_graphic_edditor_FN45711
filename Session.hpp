@@ -22,12 +22,19 @@ public:
     bool addImage(char *name);
 
     void setOpen();
+
     void setClose();
 
     void setSessionID(int newID);
 
+    void setSize(unsigned int size);
+
+    bool isSessionOpen() const;
+
+    void printSessionInfo() const;
+
 private:
-    static unsigned int fSize;
+    unsigned int fSize;
     int fSessionID;
     char **fChangesMade;
     unsigned short int fNumberOfChanges;

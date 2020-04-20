@@ -20,7 +20,6 @@ void ImageEditor::StartImageEditor()
     CommandCaller();
 
 
-
 }
 
 void ImageEditor::newSession()
@@ -38,7 +37,9 @@ void ImageEditor::newSession()
         fSessions[i].~Session();
     }
 
+
     fSessions = tempSessions;
+    fSessions[fOpenSessions].setSize(0);
     fSessions[fOpenSessions].setOpen();
     fSessions[fOpenSessions].setSessionID(fNextSession);
 
@@ -52,14 +53,15 @@ void ImageEditor::CommandCaller()
     char *token;
 
     bool correctInput = false;
+    bool endOfProgram = false;
 
-    while (!correctInput)
+    while (!correctInput || !endOfProgram)
     {
         correctInput = true;
 
         std::cout << "Please enter a command (max " << MAX_CONSOLE_COMMANDS_LENGTH << " symbols) " << std::endl;
         std::cin.getline(consoleCommands, MAX_CONSOLE_COMMANDS_LENGTH);
-        strcpy(consoleCommandsLine,consoleCommands);
+        strcpy(consoleCommandsLine, consoleCommands);
 
         token = strtok(consoleCommands, " ");
         if (token == nullptr)
@@ -71,7 +73,7 @@ void ImageEditor::CommandCaller()
 
         if (strcmp(token, "load") == 0)        // load is called
         {
-            if(!load(consoleCommandsLine))
+            if (!load(consoleCommandsLine))
             {
                 std::cout << "Invalid input! Try again" << std::endl;
                 correctInput = false;
@@ -80,81 +82,78 @@ void ImageEditor::CommandCaller()
         }
 
 
-        if(strcmp(token, "grayscale") == 0)    // grayscale is called
+        if (strcmp(token, "grayscale") == 0)    // grayscale is called
         {
 
 
         }
 
-        if(strcmp(token, "monochrome") == 0)   // monochrome is called
+        if (strcmp(token, "monochrome") == 0)   // monochrome is called
         {
 
 
         }
 
-        if(strcmp(token, "negative") == 0)     // negative is called
+        if (strcmp(token, "negative") == 0)     // negative is called
         {
 
 
         }
 
-        if(strcmp(token, "rotate") == 0)       // rotate is called
+        if (strcmp(token, "rotate") == 0)       // rotate is called
         {
 
 
         }
 
-        if(strcmp(token, "undo") == 0)         // undo is called
+        if (strcmp(token, "undo") == 0)         // undo is called
         {
 
 
         }
 
-        if(strcmp(token, "add") == 0)          // add is called
+        if (strcmp(token, "add") == 0)          // add is called
         {
 
 
         }
 
-        if(strcmp(token, "session") == 0)      // session is called
+        if (strcmp(token, "session") == 0)      // session is called
         {
 
 
         }
 
-        if(strcmp(token, "switch") == 0)       // switch is called
+        if (strcmp(token, "switch") == 0)       // switch is called
         {
 
 
         }
 
-        if(strcmp(token, "collage") == 0)      // collage  is called
+        if (strcmp(token, "collage") == 0)      // collage  is called
         {
 
 
         }
 
-        if(strcmp(token, "close") == 0)        // close  is called
+        if (strcmp(token, "close") == 0)        // close  is called
         {
 
 
         }
 
-        if(strcmp(token, "save") == 0)         // close  is called
+        if (strcmp(token, "save") == 0)         // close  is called
         {
             //add save as
-
+            endOfProgram = true;
 
         }
 
-        if(strcmp(token, "help") == 0)         //
+        if (strcmp(token, "help") == 0)         //
         {
-
+            showAllSessions();
 
         }
-
-
-
 
 
     } // end of while
@@ -164,7 +163,7 @@ void ImageEditor::CommandCaller()
 
 bool ImageEditor::load(char *input)
 {
-    char* token;
+    char *token;
     token = strtok(input, " "); // skips the first word
 
     token = strtok(nullptr, " "); // if there is nothing after "load"
@@ -177,7 +176,7 @@ bool ImageEditor::load(char *input)
 
     while (token != nullptr)
     {
-        if(!fSessions[fNextSession].addImage(token))
+        if (!fSessions[fNextSession].addImage(token))
             return false;
 
         token = strtok(nullptr, " ");
@@ -191,7 +190,7 @@ bool ImageEditor::load(char *input)
 
 bool ImageEditor::add(char *input) // Adds an image to the current session.
 {
-    char* token;
+    char *token;
     token = strtok(input, " "); // skips the first word
 
     token = strtok(nullptr, " "); // if there is nothing after "add"
@@ -200,9 +199,25 @@ bool ImageEditor::add(char *input) // Adds an image to the current session.
         return false;
     }
 
-    if(!fSessions[fCurrentSession].addImage(token))
+    if (!fSessions[fCurrentSession].addImage(token))
         return false;
 
     std::cout << std::endl;
     return true;
+}
+
+void ImageEditor::showAllSessions()
+{
+    size_t counter=0;
+
+    while (counter < fNextSession)
+    {
+        if(fSessions[counter].isSessionOpen())
+        {
+            fSessions[counter].printSessionInfo();
+        }
+
+        counter++;
+    }
+
 }
