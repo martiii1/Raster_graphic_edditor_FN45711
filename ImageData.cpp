@@ -435,35 +435,50 @@ void ImageData::rotateImageLeft()
 {
     int **tempNewMatrix;
 
+    unsigned int tempWidth;
+    unsigned int tempHeight;
+
+
     if (fImageFormat == PPMA)
     {
         tempNewMatrix = allocateMatrix(fImageHeight * 3, fImageWidth);
+
+       tempWidth = fImageWidth;
+       tempHeight = fImageHeight;
 
         for (int i = 0; i < fImageWidth; i++)
         {
             for (int j = 0; j < fImageHeight; j++)
             {
-                tempNewMatrix[i][j] = fImageMatrix[j][fImageWidth*3 - i-2];
-                tempNewMatrix[i][j+1] = fImageMatrix[j][fImageWidth*3 - i-1];
-                tempNewMatrix[i][j+2] = fImageMatrix[j][fImageWidth*3 - i];
+                tempNewMatrix[i][j] = fImageMatrix[j][fImageWidth*3 - i-3];
+                tempNewMatrix[i][j+1] = fImageMatrix[j][fImageWidth*3 - i-2];
+                tempNewMatrix[i][j+2] = fImageMatrix[j][fImageWidth*3 - i-1];
             }
         }
+        fImageWidth = tempHeight * 3;
+        fImageHeight = tempWidth;
     }
     else
     {
         tempNewMatrix = allocateMatrix(fImageHeight, fImageWidth);
 
+        tempWidth = fImageWidth;
+        tempHeight = fImageHeight;
+
         for (int i = 0; i < fImageWidth; i++)
         {
             for (int j = 0; j < fImageHeight; j++)
             {
-                tempNewMatrix[i][j] = fImageMatrix[j][fImageWidth - i];
+                tempNewMatrix[i][j] = fImageMatrix[j][fImageWidth - i-1]; // -1 because [][] starts at 00
             }
         }
 
     }
 
     deleteImageMatrix(fImageWidth, fImageHeight);
+
+    fImageWidth = tempHeight;
+    fImageHeight = tempWidth;
 
     fImageMatrix = tempNewMatrix;
 
@@ -472,7 +487,43 @@ void ImageData::rotateImageLeft()
 void ImageData::deleteImageMatrix(unsigned int width, unsigned int height)
 {
     for(int i=0;i<fImageHeight;i++)
-        delete [] fImageMatrix;
+        delete [] fImageMatrix[i];
 
     delete [] fImageMatrix;
+}
+
+unsigned short int ImageData::getImageFormat() const
+{
+    return fImageFormat;
+}
+
+unsigned int ImageData::getImageWidth() const
+{
+    return fImageWidth;
+}
+
+unsigned int ImageData::getImageHeight() const
+{
+    return  fImageHeight;
+}
+
+unsigned int ImageData::getPixelMaxValues() const
+{
+    return fPixelMaxValues;
+}
+
+void ImageData::writeMatrixToFile(std::ofstream &file)
+{
+    for(int i=0;i<fImageHeight;i++)
+    {
+        for(int j=0;j<fImageWidth;j++)
+        {
+            if(j>=35)
+                file << std::endl; // the file must be consisted of lines no longer than 70 characters
+
+            file << fImageMatrix[i][j] << " ";
+        }
+
+        file << std::endl;
+    }
 }

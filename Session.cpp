@@ -233,3 +233,26 @@ void Session::rotateSessionLeft()
         fImages[i].rotateImageLeft();
     }
 }
+
+void Session::saveImages()
+{
+    std::ofstream writefile;
+
+    for(int i=0;i<fSize;i++)
+    {
+        //writefile.open(fImages[i].getFileName())
+        writefile.open("test1.txt"); // TODO CHANGE NAME !!!!!!!!!!
+
+        writefile << "P" << fImages[i].getImageFormat() << std::endl;
+        writefile << fImages[i].getImageWidth() << " " << fImages[i].getImageHeight() << std::endl;
+
+        if(fImages[i].getImageFormat() != PBMA)
+            writefile << fImages[i].getPixelMaxValues() << std::endl;
+
+
+        fImages[i].writeMatrixToFile(writefile);
+        writefile.close();
+        rename( "test1.txt", "test1.pbm" );
+    }
+
+}

@@ -106,7 +106,7 @@ void ImageEditor::CommandCaller()
 
         if (strcmp(token, "rotate") == 0)       // rotate is called
         {
-
+            rotateLeft();
 
         }
 
@@ -149,6 +149,7 @@ void ImageEditor::CommandCaller()
         if (strcmp(token, "save") == 0)         // close  is called
         {
             //add save as
+            saveImagesInCurrentSession();
             endOfProgram = true;
 
         }
@@ -240,6 +241,12 @@ bool ImageEditor::switchSession(int sessionID)
 
 void ImageEditor::rotateLeft()
 {
-    fSessions[fCurrentSession].rotateLeft(); // TODO add changes made!
+    fSessions[fCurrentSession].rotateSessionLeft(); // TODO add changes made!
+
+}
+
+void ImageEditor::saveImagesInCurrentSession()
+{
+    fSessions[fCurrentSession].saveImages();
 
 }

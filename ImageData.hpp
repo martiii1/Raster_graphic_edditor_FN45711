@@ -27,6 +27,13 @@ public:
     void delImage();
 
 
+    unsigned short int getImageFormat() const;
+    unsigned int getImageWidth() const;
+    unsigned int getImageHeight() const;
+    unsigned int getPixelMaxValues() const;
+    void writeMatrixToFile(std::ofstream &file);
+
+
     //char* fImageComments;
     int **fImageMatrix; // unsigned TODO
     void rotateImageLeft();
