@@ -518,7 +518,7 @@ void ImageData::writeMatrixToFile(std::ofstream &file)
     {
         for(int j=0;j<fImageWidth;j++)
         {
-            if(j>=35)
+            if(j%35 == 0)
                 file << std::endl; // the file must be consisted of lines no longer than 70 characters
 
             file << fImageMatrix[i][j] << " ";
@@ -526,4 +526,24 @@ void ImageData::writeMatrixToFile(std::ofstream &file)
 
         file << std::endl;
     }
+}
+
+void ImageData::saveImageToFile()
+{
+    std::ofstream writefile;
+    //writefile.open(fImages[i].getFileName())
+
+    writefile.open("test1.txt"); // TODO CHANGE NAME !!!!!!!!!!
+
+    writefile << "P" << fImageFormat << std::endl;
+    writefile << fImageWidth << " " << fImageHeight << std::endl;
+
+    if(fImageFormat != PBMA)
+        writefile << fPixelMaxValues << std::endl;
+
+
+    writeMatrixToFile(writefile);
+
+    writefile.close();
+    rename( "test1.txt", "test1.pbm" );
 }

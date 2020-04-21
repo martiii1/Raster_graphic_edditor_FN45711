@@ -36,9 +36,11 @@ public:
 
     //char* fImageComments;
     int **fImageMatrix; // unsigned TODO
-    void rotateImageLeft();
 
+    void rotateImageLeft();
     void rotateImageRight();
+
+    void saveImageToFile();
 
 private:
     char *fFileName;
