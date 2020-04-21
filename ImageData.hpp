@@ -62,4 +62,11 @@ private:
     void skipComments(std::ifstream &file);
 
     int **allocateMatrix(unsigned int width, unsigned int height);
+
+    void deleteImageMatrix(unsigned int width, unsigned int height);
+
+    void rotateImageLeft();
+
+    void rotateImageRight();
+
 };

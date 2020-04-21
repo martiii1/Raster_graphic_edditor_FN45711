@@ -215,3 +215,13 @@ int Session::getSessionID() const
 {
     return fSessionID;
 }
+
+unsigned short int Session::getNumberOfChanges() const
+{
+    return fNumberOfChanges;
+}
+
+unsigned int Session::getSize() const
+{
+    return fSize;
+}

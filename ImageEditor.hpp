@@ -28,5 +28,9 @@ private:
     bool add(char *input);
 
     bool switchSession(int sessionID);
+
+    void rotateLeft();
+
+    void rotateRight();
 };
 

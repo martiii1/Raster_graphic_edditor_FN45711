@@ -237,3 +237,12 @@ bool ImageEditor::switchSession(int sessionID)
     return false;
 
 }
+
+void ImageEditor::rotateLeft()
+{
+    for(int i=0;i<fSessions[fCurrentSession].getSize();i++)
+    {
+        fSessions[fCurrentSession]
+    }
+
+}

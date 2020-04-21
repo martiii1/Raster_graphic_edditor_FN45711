@@ -25,10 +25,18 @@ public:
     void setClose();
     void setSessionID(int newID);
     void setSize(unsigned int size);
+    void setNumberOfChanget( unsigned short int newNumber);
+
+
+    int getSessionID() const;
+    unsigned int getSize() const ;
+    unsigned short int getNumberOfChanges() const;
 
     bool isSessionOpen() const;
     void printSessionInfo() const;
-    int getSessionID() const;
+
+    void rotateLeft();
+    void rotateRight();
 
 private:
     unsigned int fSize;

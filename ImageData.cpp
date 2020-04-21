@@ -55,13 +55,13 @@ void ImageData::copyImage(const ImageData &otherImage)
     fPixelMaxValues = otherImage.fPixelMaxValues;
 
     fFileName = new(std::nothrow) char[strlen(otherImage.fFileName) + 1];
-    if(fFileName == nullptr)
+    if (fFileName == nullptr)
     {
         std::cout << "Not enough memory! " << std::endl;
         delImage();
         return;
     }
-    strcpy(fFileName,otherImage.fFileName);
+    strcpy(fFileName, otherImage.fFileName);
 
     if (fImageFormat == PPMA)
     {
@@ -132,7 +132,7 @@ bool ImageData::loadImage(char *FileName)
     }
     image.close();
 
-    if(fImageFormat == BROKEN)
+    if (fImageFormat == BROKEN)
         return false;
 
     return true;
@@ -162,7 +162,7 @@ void ImageData::readPBMA(std::ifstream &file)
     getPBMApixels(file);
 
     //std::cout << fFileName << "   " << fImageFormat << "   " << fImageWidth << "   " << fImageHeight << "   "
-              //<< fPixelMaxValues; // TODO !
+    //<< fPixelMaxValues; // TODO !
 }
 
 void ImageData::readPGMA(std::ifstream &file)
@@ -429,4 +429,50 @@ int **ImageData::allocateMatrix(unsigned int width, unsigned int height)
     }
 
     return Matrix;
+}
+
+void ImageData::rotateImageLeft()
+{
+    int **tempNewMatrix;
+
+    if (fImageFormat == PPMA)
+    {
+        tempNewMatrix = allocateMatrix(fImageHeight * 3, fImageWidth);
+
+        for (int i = 0; i < fImageWidth; i++)
+        {
+            for (int j = 0; j < fImageHeight; j++)
+            {
+                tempNewMatrix[i][j] = fImageMatrix[j][fImageWidth*3 - i-2];
+                tempNewMatrix[i][j+1] = fImageMatrix[j][fImageWidth*3 - i-1];
+                tempNewMatrix[i][j+2] = fImageMatrix[j][fImageWidth*3 - i];
+            }
+        }
+    }
+    else
+    {
+        tempNewMatrix = allocateMatrix(fImageHeight, fImageWidth);
+
+        for (int i = 0; i < fImageWidth; i++)
+        {
+            for (int j = 0; j < fImageHeight; j++)
+            {
+                tempNewMatrix[i][j] = fImageMatrix[j][fImageWidth - i];
+            }
+        }
+
+    }
+
+    deleteImageMatrix(fImageWidth, fImageHeight);
+
+    fImageMatrix = tempNewMatrix;
+
+}
+
+void ImageData::deleteImageMatrix(unsigned int width, unsigned int height)
+{
+    for(int i=0;i<fImageHeight;i++)
+        delete [] fImageMatrix;
+
+    delete [] fImageMatrix;
 }
