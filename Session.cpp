@@ -93,7 +93,7 @@ void Session::resizeSession()
 bool Session::addImage(char *name)
 {
     if(fImages == nullptr)
-        fImages = new(std::nothrow) ImageData[fCapacity]; // TODO
+        fImages = new(std::nothrow) ImageData[fCapacity];
 
     if (fSize == fCapacity)
         resizeSession();
@@ -224,4 +224,12 @@ unsigned short int Session::getNumberOfChanges() const
 unsigned int Session::getSize() const
 {
     return fSize;
+}
+
+void Session::rotateSessionLeft()
+{
+    for(int i=0;i<fSize;i++)
+    {
+        fImages[i].rotateImageLeft();
+    }
 }

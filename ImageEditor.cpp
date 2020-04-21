@@ -240,9 +240,6 @@ bool ImageEditor::switchSession(int sessionID)
 
 void ImageEditor::rotateLeft()
 {
-    for(int i=0;i<fSessions[fCurrentSession].getSize();i++)
-    {
-        fSessions[fCurrentSession]
-    }
+    fSessions[fCurrentSession].rotateLeft(); // TODO add changes made!
 
 }

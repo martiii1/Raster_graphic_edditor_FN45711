@@ -27,18 +27,19 @@ public:
     void delImage();
 
 
-protected:
+    //char* fImageComments;
+    int **fImageMatrix; // unsigned TODO
+    void rotateImageLeft();
+
+    void rotateImageRight();
+
+private:
     char *fFileName;
     unsigned short int fImageFormat;
     unsigned int fImageWidth;
     unsigned int fImageHeight;
     unsigned int fPixelMaxValues;
-    //char* fImageComments;
-    int **fImageMatrix; // unsigned TODO
 
-
-
-private:
     void copyImage(const ImageData &otherImage);
 
     void readPBMA(std::ifstream &file);
@@ -64,9 +65,5 @@ private:
     int **allocateMatrix(unsigned int width, unsigned int height);
 
     void deleteImageMatrix(unsigned int width, unsigned int height);
-
-    void rotateImageLeft();
-
-    void rotateImageRight();
 
 };

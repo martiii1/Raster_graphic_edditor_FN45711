@@ -35,8 +35,8 @@ public:
     bool isSessionOpen() const;
     void printSessionInfo() const;
 
-    void rotateLeft();
-    void rotateRight();
+    void rotateSessionLeft();
+    void rotateSessionRight();
 
 private:
     unsigned int fSize;
