@@ -107,8 +107,8 @@ void ImageEditor::CommandCaller()
         if (strcmp(token, "rotate") == 0)       // rotate is called
         {
 
-            rotateRight();
-            //rotateLeft();
+            //rotateRight();
+            rotateLeft();
 
         }
 

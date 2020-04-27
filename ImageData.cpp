@@ -455,9 +455,9 @@ void ImageData::rotateImageLeft()
         {
             for (int j = 0; j < fImageHeight; j++)
             {
-                tempNewMatrix[i][counterNew] = fImageMatrix[j][fImageWidth - counterOld - 3];
-                tempNewMatrix[i][counterNew+1] = fImageMatrix[j][fImageWidth - counterOld - 2];
-                tempNewMatrix[i][counterNew+2] = fImageMatrix[j][fImageWidth - counterOld - 1];
+                tempNewMatrix[i][counterNew] = fImageMatrix[j][fImageWidth*3 - counterOld - 3];
+                tempNewMatrix[i][counterNew+1] = fImageMatrix[j][fImageWidth*3 - counterOld - 2];
+                tempNewMatrix[i][counterNew+2] = fImageMatrix[j][fImageWidth*3 - counterOld - 1];
                 counterNew+=3;
             }
             counterNew = 0;
@@ -574,6 +574,7 @@ void ImageData::rotateImageRight()
 
         tempWidth = fImageWidth;
         tempHeight = fImageHeight;
+
         unsigned int counterNew=0;
         unsigned int counterOld=0;
 
