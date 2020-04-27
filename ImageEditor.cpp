@@ -164,12 +164,12 @@ void ImageEditor::CommandCaller()
             token = strtok(nullptr, " ");
             if (strcmp(token, "as") == 0)       // rotate is called
             {
-                saveImagesInCurrentSession();
+                saveImagesAsInCurrentSession();
                 endOfProgram = true;
             }
             else if (token == nullptr)
             {
-                saveImagesAsInCurrentSession();
+                saveImagesInCurrentSession();
                 endOfProgram = true;
             }
             else

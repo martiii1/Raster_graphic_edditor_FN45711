@@ -628,7 +628,7 @@ void ImageData::saveAsImageToFile() // TODO add a check for forbidden symbols in
     std::ofstream writefile;
     char tempNewName[MAX_FILE_NAME_SIZE];
 
-    std::cout << std::endl <<" enter a new name for the image file: ";
+    std::cout << std::endl <<"Enter a new name for the image file( " << fFileName <<" )  :  ";
     std::cin >> tempNewName;
 
     if(fImageFormat == PBMA)
