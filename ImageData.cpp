@@ -448,14 +448,20 @@ void ImageData::rotateImageLeft()
        tempWidth = fImageWidth;
        tempHeight = fImageHeight;
 
+        unsigned int counterNew=0;
+        unsigned int counterOld=0;
+
         for (int i = 0; i < fImageWidth; i++)
         {
             for (int j = 0; j < fImageHeight; j++)
             {
-                tempNewMatrix[i][j] = fImageMatrix[j][fImageWidth*3 - i-3];
-                tempNewMatrix[i][j+1] = fImageMatrix[j][fImageWidth*3 - i-2];
-                tempNewMatrix[i][j+2] = fImageMatrix[j][fImageWidth*3 - i-1];
+                tempNewMatrix[i][counterNew] = fImageMatrix[j][fImageWidth - counterOld - 3];
+                tempNewMatrix[i][counterNew+1] = fImageMatrix[j][fImageWidth - counterOld - 2];
+                tempNewMatrix[i][counterNew+2] = fImageMatrix[j][fImageWidth - counterOld - 1];
+                counterNew+=3;
             }
+            counterNew = 0;
+            counterOld+=3;
         }
         fImageWidth = tempHeight * 3;
         fImageHeight = tempWidth;
@@ -516,11 +522,15 @@ unsigned int ImageData::getPixelMaxValues() const
 
 void ImageData::writeMatrixToFile(std::ofstream &file)
 {
+    unsigned int tempWidth;
+    if(fImageFormat == PPMA)
+        tempWidth = fImageWidth * 3;
+
     for(int i=0;i<fImageHeight;i++)
     {
-        for(int j=0;j<fImageWidth;j++)
+        for(int j=0;j<tempWidth;j++)
         {
-            if(j%35 == 0)
+            if(j>=35 && j%35 == 0)
                 file << std::endl; // the file must be consisted of lines no longer than 70 characters
 
             file << fImageMatrix[i][j] << " ";
@@ -564,16 +574,23 @@ void ImageData::rotateImageRight()
 
         tempWidth = fImageWidth;
         tempHeight = fImageHeight;
+        unsigned int counterNew=0;
+        unsigned int counterOld=0;
 
         for (int i = 0; i < fImageWidth; i++)
         {
             for (int j = 0; j < fImageHeight; j++)
             {
-                tempNewMatrix[i][j] = fImageMatrix[fImageHeight - j - 1][i];
-                tempNewMatrix[i][j+1] = fImageMatrix[fImageHeight - j - 1][i + 1];
-                tempNewMatrix[i][j+2] = fImageMatrix[fImageHeight - j - 1][i + 2];
+                tempNewMatrix[i][counterNew] = fImageMatrix[fImageHeight - j - 1][counterOld];
+                tempNewMatrix[i][counterNew + 1] = fImageMatrix[fImageHeight - j - 1][counterOld + 1];
+                tempNewMatrix[i][counterNew + 2] = fImageMatrix[fImageHeight - j - 1][counterOld + 2];
+
+                counterNew+=3;
             }
+            counterNew=0;
+            counterOld+=3;
         }
+
         fImageWidth = tempHeight * 3;
         fImageHeight = tempWidth;
     }
