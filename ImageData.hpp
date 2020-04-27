@@ -17,20 +17,30 @@ class ImageData
 {
 public:
     ImageData();
+
     ImageData(char *FileName);
+
     ImageData(const ImageData &other);
+
     ImageData &operator=(const ImageData &other);
+
     ~ImageData();
 
     char *getFileName();
+
     bool loadImage(char *FileName);
+
     void delImage();
 
 
     unsigned short int getImageFormat() const;
+
     unsigned int getImageWidth() const;
+
     unsigned int getImageHeight() const;
+
     unsigned int getPixelMaxValues() const;
+
     void writeMatrixToFile(std::ofstream &file);
 
 
@@ -38,9 +48,12 @@ public:
     int **fImageMatrix; // unsigned TODO
 
     void rotateImageLeft();
+
     void rotateImageRight();
 
     void saveImageToFile();
+
+    void saveAsImageToFile(char *newName);
 
 private:
     char *fFileName;

@@ -445,23 +445,23 @@ void ImageData::rotateImageLeft()
     {
         tempNewMatrix = allocateMatrix(fImageHeight * 3, fImageWidth);
 
-       tempWidth = fImageWidth;
-       tempHeight = fImageHeight;
+        tempWidth = fImageWidth;
+        tempHeight = fImageHeight;
 
-        unsigned int counterNew=0;
-        unsigned int counterOld=0;
+        unsigned int counterNew = 0;
+        unsigned int counterOld = 0;
 
         for (int i = 0; i < fImageWidth; i++)
         {
             for (int j = 0; j < fImageHeight; j++)
             {
-                tempNewMatrix[i][counterNew] = fImageMatrix[j][fImageWidth*3 - counterOld - 3];
-                tempNewMatrix[i][counterNew+1] = fImageMatrix[j][fImageWidth*3 - counterOld - 2];
-                tempNewMatrix[i][counterNew+2] = fImageMatrix[j][fImageWidth*3 - counterOld - 1];
-                counterNew+=3;
+                tempNewMatrix[i][counterNew] = fImageMatrix[j][fImageWidth * 3 - counterOld - 3];
+                tempNewMatrix[i][counterNew + 1] = fImageMatrix[j][fImageWidth * 3 - counterOld - 2];
+                tempNewMatrix[i][counterNew + 2] = fImageMatrix[j][fImageWidth * 3 - counterOld - 1];
+                counterNew += 3;
             }
             counterNew = 0;
-            counterOld+=3;
+            counterOld += 3;
         }
         fImageWidth = tempHeight * 3;
         fImageHeight = tempWidth;
@@ -477,7 +477,7 @@ void ImageData::rotateImageLeft()
         {
             for (int j = 0; j < fImageHeight; j++)
             {
-                tempNewMatrix[i][j] = fImageMatrix[j][fImageWidth - i-1]; // -1 because [][] starts at 00
+                tempNewMatrix[i][j] = fImageMatrix[j][fImageWidth - i - 1]; // -1 because [][] starts at 00
             }
         }
 
@@ -494,10 +494,10 @@ void ImageData::rotateImageLeft()
 
 void ImageData::deleteImageMatrix(unsigned int width, unsigned int height)
 {
-    for(int i=0;i<fImageHeight;i++)
-        delete [] fImageMatrix[i];
+    for (int i = 0; i < fImageHeight; i++)
+        delete[] fImageMatrix[i];
 
-    delete [] fImageMatrix;
+    delete[] fImageMatrix;
 }
 
 unsigned short int ImageData::getImageFormat() const
@@ -512,7 +512,7 @@ unsigned int ImageData::getImageWidth() const
 
 unsigned int ImageData::getImageHeight() const
 {
-    return  fImageHeight;
+    return fImageHeight;
 }
 
 unsigned int ImageData::getPixelMaxValues() const
@@ -523,14 +523,15 @@ unsigned int ImageData::getPixelMaxValues() const
 void ImageData::writeMatrixToFile(std::ofstream &file)
 {
     unsigned int tempWidth;
-    if(fImageFormat == PPMA)
+    if (fImageFormat == PPMA)
         tempWidth = fImageWidth * 3;
+    tempWidth = fImageWidth;
 
-    for(int i=0;i<fImageHeight;i++)
+    for (int i = 0; i < fImageHeight; i++)
     {
-        for(int j=0;j<tempWidth;j++)
+        for (int j = 0; j < tempWidth; j++)
         {
-            if(j>=35 && j%35 == 0)
+            if (j >= 35 && j % 35 == 0)
                 file << std::endl; // the file must be consisted of lines no longer than 70 characters
 
             file << fImageMatrix[i][j] << " ";
@@ -540,25 +541,26 @@ void ImageData::writeMatrixToFile(std::ofstream &file)
     }
 }
 
+#define TempImageName "tempImageFile.txt"
+
 void ImageData::saveImageToFile()
 {
     std::ofstream writefile;
-    //writefile.open(fImages[i].getFileName())
+    char tempNewName[MAX_FILE_NAME_SIZE];
+    std::strcpy(tempNewName,fFileName);
 
-    writefile.open("test1.txt"); // TODO CHANGE NAME !!!!!!!!!!
+    writefile.open(TempImageName, std::ofstream::trunc);
 
     writefile << "P" << fImageFormat << std::endl;
     writefile << fImageWidth << " " << fImageHeight << std::endl;
 
-    if(fImageFormat != PBMA)
-        writefile << fPixelMaxValue << std::endl;
-
-
     writeMatrixToFile(writefile);
 
     writefile.close();
-    rename( "test1.txt", "test1.ppm" );
+    remove( tempNewName );
+    rename(TempImageName, tempNewName );
 }
+
 
 void ImageData::rotateImageRight()
 {
@@ -575,8 +577,8 @@ void ImageData::rotateImageRight()
         tempWidth = fImageWidth;
         tempHeight = fImageHeight;
 
-        unsigned int counterNew=0;
-        unsigned int counterOld=0;
+        unsigned int counterNew = 0;
+        unsigned int counterOld = 0;
 
         for (int i = 0; i < fImageWidth; i++)
         {
@@ -586,10 +588,10 @@ void ImageData::rotateImageRight()
                 tempNewMatrix[i][counterNew + 1] = fImageMatrix[fImageHeight - j - 1][counterOld + 1];
                 tempNewMatrix[i][counterNew + 2] = fImageMatrix[fImageHeight - j - 1][counterOld + 2];
 
-                counterNew+=3;
+                counterNew += 3;
             }
-            counterNew=0;
-            counterOld+=3;
+            counterNew = 0;
+            counterOld += 3;
         }
 
         fImageWidth = tempHeight * 3;
@@ -606,7 +608,7 @@ void ImageData::rotateImageRight()
         {
             for (int j = 0; j < fImageHeight; j++)
             {
-                tempNewMatrix[i][j] = fImageMatrix[fImageHeight - j -1][i]; // -1 because [][] starts at 00
+                tempNewMatrix[i][j] = fImageMatrix[fImageHeight - j - 1][i]; // -1 because [][] starts at 00
             }
         }
 
@@ -619,4 +621,21 @@ void ImageData::rotateImageRight()
 
     fImageMatrix = tempNewMatrix;
 
+}
+
+void ImageData::saveAsImageToFile(char *newName)
+{
+    std::ofstream writefile;
+    char tempNewName[MAX_FILE_NAME_SIZE];
+    std::strcpy(tempNewName,newName);
+
+    writefile.open(TempImageName, std::ofstream::trunc);
+
+    writefile << "P" << fImageFormat << std::endl;
+    writefile << fImageWidth << " " << fImageHeight << std::endl;
+
+    writeMatrixToFile(writefile);
+
+    writefile.close();
+    rename(TempImageName, tempNewName );
 }
