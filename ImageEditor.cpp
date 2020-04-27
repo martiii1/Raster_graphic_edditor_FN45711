@@ -106,13 +106,12 @@ void ImageEditor::CommandCaller()
 
         if (strcmp(token, "rotate") == 0)       // rotate is called
         {
-
             token = strtok(nullptr, " ");
-            if (strcmp(token, "left") == 0)       // rotate is called
+            if (strcmp(token, "left") == 0)       // rotate left
             {
                 rotateLeft();
             }
-            else if (strcmp(token, "right") == 0)       // rotate is called
+            else if (strcmp(token, "right") == 0)       // rotate right
             {
                 rotateRight();
             }
@@ -162,9 +161,23 @@ void ImageEditor::CommandCaller()
 
         if (strcmp(token, "save") == 0)         // close  is called
         {
-            //add save as
-            saveImagesInCurrentSession();
-            endOfProgram = true;
+            token = strtok(nullptr, " ");
+            if (strcmp(token, "as") == 0)       // rotate is called
+            {
+                saveImagesInCurrentSession();
+                endOfProgram = true;
+            }
+            else if (token == nullptr)
+            {
+                saveImagesAsInCurrentSession();
+                endOfProgram = true;
+            }
+            else
+            {
+                continue;
+            }
+
+
 
         }
 
@@ -273,7 +286,7 @@ void ImageEditor::rotateRight()
 
 void ImageEditor::saveImagesAsInCurrentSession()
 {
-        fSessions[fCurrentSession].
+    fSessions[fCurrentSession].saveImagesAs();
 
 
 }
