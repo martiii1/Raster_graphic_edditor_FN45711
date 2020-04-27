@@ -47,7 +47,7 @@ private:
     unsigned short int fImageFormat;
     unsigned int fImageWidth;
     unsigned int fImageHeight;
-    unsigned int fPixelMaxValues;
+    unsigned int fPixelMaxValue;
 
     void copyImage(const ImageData &otherImage);
 

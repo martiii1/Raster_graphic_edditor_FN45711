@@ -106,7 +106,9 @@ void ImageEditor::CommandCaller()
 
         if (strcmp(token, "rotate") == 0)       // rotate is called
         {
-            rotateLeft();
+
+            rotateRight();
+            //rotateLeft();
 
         }
 
@@ -248,5 +250,11 @@ void ImageEditor::rotateLeft()
 void ImageEditor::saveImagesInCurrentSession()
 {
     fSessions[fCurrentSession].saveImages();
+
+}
+
+void ImageEditor::rotateRight()
+{
+    fSessions[fCurrentSession].rotateSessionRight(); // TODO add changes made!
 
 }

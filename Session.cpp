@@ -244,3 +244,11 @@ void Session::saveImages()
     }
 
 }
+
+void Session::rotateSessionRight()
+{
+    for(int i=0;i<fSize;i++)
+    {
+        fImages[i].rotateImageRight();
+    }
+}

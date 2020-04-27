@@ -10,7 +10,7 @@ ImageData::ImageData()
     fImageFormat = 0;
     fImageWidth = 0;
     fImageHeight = 0;
-    fPixelMaxValues = 0;
+    fPixelMaxValue = 0;
     //char* fImageComments;
     fImageMatrix = nullptr;
 
@@ -52,7 +52,7 @@ void ImageData::copyImage(const ImageData &otherImage)
     fImageFormat = otherImage.fImageFormat;
     fImageWidth = otherImage.fImageWidth;
     fImageHeight = otherImage.fImageHeight;
-    fPixelMaxValues = otherImage.fPixelMaxValues;
+    fPixelMaxValue = otherImage.fPixelMaxValue;
 
     fFileName = new(std::nothrow) char[strlen(otherImage.fFileName) + 1];
     if (fFileName == nullptr)
@@ -162,7 +162,7 @@ void ImageData::readPBMA(std::ifstream &file)
     getPBMApixels(file);
 
     //std::cout << fFileName << "   " << fImageFormat << "   " << fImageWidth << "   " << fImageHeight << "   "
-    //<< fPixelMaxValues; // TODO !
+    //<< fPixelMaxValue; // TODO !
 }
 
 void ImageData::readPGMA(std::ifstream &file)
@@ -222,6 +222,8 @@ void ImageData::getPixelMaxValues(std::ifstream &file)
             delImage();
             return;
         }
+
+    fPixelMaxValue = maxPixel;
 }
 
 void ImageData::getPBMApixels(std::ifstream &file)
@@ -509,7 +511,7 @@ unsigned int ImageData::getImageHeight() const
 
 unsigned int ImageData::getPixelMaxValues() const
 {
-    return fPixelMaxValues;
+    return fPixelMaxValue;
 }
 
 void ImageData::writeMatrixToFile(std::ofstream &file)
@@ -539,11 +541,64 @@ void ImageData::saveImageToFile()
     writefile << fImageWidth << " " << fImageHeight << std::endl;
 
     if(fImageFormat != PBMA)
-        writefile << fPixelMaxValues << std::endl;
+        writefile << fPixelMaxValue << std::endl;
 
 
     writeMatrixToFile(writefile);
 
     writefile.close();
-    rename( "test1.txt", "test1.pbm" );
+    rename( "test1.txt", "test1.ppm" );
+}
+
+void ImageData::rotateImageRight()
+{
+    int **tempNewMatrix;
+
+    unsigned int tempWidth;
+    unsigned int tempHeight;
+
+
+    if (fImageFormat == PPMA)
+    {
+        tempNewMatrix = allocateMatrix(fImageHeight * 3, fImageWidth);
+
+        tempWidth = fImageWidth;
+        tempHeight = fImageHeight;
+
+        for (int i = 0; i < fImageWidth; i++)
+        {
+            for (int j = 0; j < fImageHeight; j++)
+            {
+                tempNewMatrix[i][j] = fImageMatrix[fImageHeight - j - 1][i];
+                tempNewMatrix[i][j+1] = fImageMatrix[fImageHeight - j - 1][i + 1];
+                tempNewMatrix[i][j+2] = fImageMatrix[fImageHeight - j - 1][i + 2];
+            }
+        }
+        fImageWidth = tempHeight * 3;
+        fImageHeight = tempWidth;
+    }
+    else
+    {
+        tempNewMatrix = allocateMatrix(fImageHeight, fImageWidth);
+
+        tempWidth = fImageWidth;
+        tempHeight = fImageHeight;
+
+        for (int i = 0; i < fImageWidth; i++)
+        {
+            for (int j = 0; j < fImageHeight; j++)
+            {
+                tempNewMatrix[i][j] = fImageMatrix[fImageHeight - j -1][i]; // -1 because [][] starts at 00
+            }
+        }
+
+    }
+
+    deleteImageMatrix(fImageWidth, fImageHeight);
+
+    fImageWidth = tempHeight;
+    fImageHeight = tempWidth;
+
+    fImageMatrix = tempNewMatrix;
+
 }
