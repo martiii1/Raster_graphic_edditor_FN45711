@@ -27,6 +27,8 @@ private:
 
     void saveImagesInCurrentSession(); // TODO add cout-s and checks
 
+    void saveImagesAsInCurrentSession();
+
     bool add(char *input);
 
     bool switchSession(int sessionID);

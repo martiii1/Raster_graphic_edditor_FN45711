@@ -53,7 +53,7 @@ public:
 
     void saveImageToFile();
 
-    void saveAsImageToFile(char *newName);
+    void saveAsImageToFile();
 
 private:
     char *fFileName;

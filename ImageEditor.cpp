@@ -270,3 +270,10 @@ void ImageEditor::rotateRight()
     fSessions[fCurrentSession].rotateSessionRight(); // TODO add changes made!
 
 }
+
+void ImageEditor::saveImagesAsInCurrentSession()
+{
+        fSessions[fCurrentSession].
+
+
+}

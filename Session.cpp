@@ -252,3 +252,11 @@ void Session::rotateSessionRight()
         fImages[i].rotateImageRight();
     }
 }
+
+void Session::saveImagesAs()
+{
+    for(int i=0;i<fSize;i++)
+    {
+        fImages[i].saveAsImageToFile();
+    }
+}

@@ -623,11 +623,24 @@ void ImageData::rotateImageRight()
 
 }
 
-void ImageData::saveAsImageToFile(char *newName)
+void ImageData::saveAsImageToFile() // TODO add a check for forbidden symbols in the filename!
 {
     std::ofstream writefile;
     char tempNewName[MAX_FILE_NAME_SIZE];
-    std::strcpy(tempNewName,newName);
+
+    std::cout << std::endl <<" enter a new name for the image file: ";
+    std::cin >> tempNewName;
+
+    if(fImageFormat == PBMA)
+        std::strcat(tempNewName, ".pbm");
+
+    if(fImageFormat == PGMA)
+        std::strcat(tempNewName, ".pgm");
+
+    if(fImageFormat == PPMA)
+        std::strcat(tempNewName, ".ppm");
+
+    std::cout << fFileName << " is going to be saved as: " << tempNewName << std::endl;
 
     writefile.open(TempImageName, std::ofstream::trunc);
 

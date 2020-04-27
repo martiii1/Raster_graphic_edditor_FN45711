@@ -38,6 +38,8 @@ public:
     void rotateSessionLeft();
     void rotateSessionRight();
     void saveImages();
+    void saveImagesAs();
+
 
 private:
     unsigned int fSize;
