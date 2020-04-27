@@ -33,7 +33,7 @@ void ImageEditor::newSession()
 
     for (size_t i = 0; i < fNextSession; i++)
     {
-        if(!fSessions[i].isSessionOpen())
+        if (!fSessions[i].isSessionOpen())
             continue;
 
         tempSessions[i] = fSessions[i];
@@ -47,7 +47,7 @@ void ImageEditor::newSession()
     fSessions[fNextSession].setSessionID(fNextSession);
 
     std::cout << std::endl << std::endl << "Session with ID:" << fSessions[fNextSession].getSessionID()
-    << " started." << std::endl;
+              << " started." << std::endl;
 }
 
 void ImageEditor::CommandCaller()
@@ -107,8 +107,20 @@ void ImageEditor::CommandCaller()
         if (strcmp(token, "rotate") == 0)       // rotate is called
         {
 
-            //rotateRight();
-            rotateLeft();
+            token = strtok(nullptr, " ");
+            if (strcmp(token, "left") == 0)       // rotate is called
+            {
+                rotateLeft();
+            }
+            else if (strcmp(token, "right") == 0)       // rotate is called
+            {
+                rotateRight();
+            }
+            else
+            {
+                continue;
+            }
+
 
         }
 
@@ -214,11 +226,11 @@ bool ImageEditor::add(char *input) // Adds an image to the current session.
 
 void ImageEditor::showAllSessions()
 {
-    size_t counter=0;
+    size_t counter = 0;
 
     while (counter < fNextSession)
     {
-        if(fSessions[counter].isSessionOpen())
+        if (fSessions[counter].isSessionOpen())
         {
             fSessions[counter].printSessionInfo();
         }
@@ -230,10 +242,10 @@ void ImageEditor::showAllSessions()
 
 bool ImageEditor::switchSession(int sessionID)
 {
-    if(fSessions[sessionID].isSessionOpen())
+    if (fSessions[sessionID].isSessionOpen())
     {
         fCurrentSession = sessionID;
-        std::cout << "Session with ID: " << sessionID <<" is loaded! " << std::endl;
+        std::cout << "Session with ID: " << sessionID << " is loaded! " << std::endl;
         return true;
     }
 

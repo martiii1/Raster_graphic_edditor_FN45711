@@ -25,7 +25,7 @@ public:
     void setClose();
     void setSessionID(int newID);
     void setSize(unsigned int size);
-    void setNumberOfChanget( unsigned short int newNumber);
+    void setNumberOfChanges(unsigned short int newNumber);
 
 
     int getSessionID() const;
