@@ -90,4 +90,6 @@ private:
 
     void deleteImageMatrix(unsigned int width, unsigned int height);
 
+    bool grayscaleMatrix();
+
 };

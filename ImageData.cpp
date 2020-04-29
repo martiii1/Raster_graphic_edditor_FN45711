@@ -528,14 +528,14 @@ void ImageData::writeMatrixToFile(std::ofstream &file)
     else
         tempWidth = fImageWidth;
 
-    size_t counter=0;
+    size_t counter = 0;
 
     unsigned short int newLineLimit;
-    if(fImageFormat == PPMA)
+    if (fImageFormat == PPMA)
         newLineLimit = 12;
-    if(fImageFormat == PGMA)
+    if (fImageFormat == PGMA)
         newLineLimit = 19;
-    if(fImageFormat == PBMA)
+    if (fImageFormat == PBMA)
         newLineLimit = 39;
 
     for (int i = 0; i < fImageHeight; i++)
@@ -566,7 +566,7 @@ void ImageData::saveImageToFile()
     writefile << "P" << fImageFormat << std::endl;
     writefile << fImageWidth << " " << fImageHeight << std::endl;
 
-    if(fImageFormat != PBMA)
+    if (fImageFormat != PBMA)
         writefile << fPixelMaxValue << std::endl;
 
     writeMatrixToFile(writefile);
@@ -662,7 +662,7 @@ void ImageData::saveAsImageToFile() // TODO add a check for forbidden symbols in
     writefile << "P" << fImageFormat << std::endl;
     writefile << fImageWidth << " " << fImageHeight << std::endl;
 
-    if(fImageFormat != PBMA)
+    if (fImageFormat != PBMA)
         writefile << fPixelMaxValue << std::endl;
 
     writeMatrixToFile(writefile);
@@ -673,6 +673,25 @@ void ImageData::saveAsImageToFile() // TODO add a check for forbidden symbols in
 
 void ImageData::makeImageGrayscale()
 {
+    bool imageIsAlreadyGrayscale;
+
+    if (fImageFormat == PPMA)
+    {
+        if (grayscaleMatrix())
+            std::cout << "Image " << fFileName << " converted to grayscale. " << std::endl;
+        else
+            std::cout << "The image is .ppma format but is already grayscale. No changes will be made."<< std::endl;
+    }
+    else
+    {
+        std::cout << "Image " << fFileName << " is already grayscale. No changes will be made!" << std::endl;
+        return;
+    }
+
+}
+
+bool ImageData::grayscaleMatrix()
+{
     // Weight values for nicer image taken from https://www.tutorialspoint.com/dip/grayscale_to_rgb_conversion.htm
     const float redWeight = 0.3;
     const float greenWeight = 0.6;
@@ -681,41 +700,29 @@ void ImageData::makeImageGrayscale()
     unsigned short int tempPixelValue;
 
     bool imageIsAlreadyGrayscale = true;
-    if (fImageFormat == PPMA)
+
+    for (int i = 0; i < fImageHeight; i++)
     {
-        for (int i = 0; i < fImageHeight; i++)
+        for (int j = 0; j < fImageWidth * 3; j += 3)
         {
-            for (int j = 0; j < fImageWidth * 3; j += 3)
+            if (!((fImageMatrix[i][j] == fImageMatrix[i][j + 1]) &&  // is true the pixel is gray. !true = false
+                  (fImageMatrix[i][j + 1] == fImageMatrix[i][j + 2]))) // true when the pixel has color
             {
-                if (!((fImageMatrix[i][j] == fImageMatrix[i][j + 1]) &&  // is true the pixel is gray. !true = false
-                      (fImageMatrix[i][j + 1] == fImageMatrix[i][j + 2]))) // true when the pixel has color
-                {
-                    tempPixelValue = 0;
-                    imageIsAlreadyGrayscale = false;
+                tempPixelValue = 0;
+                imageIsAlreadyGrayscale = false;
 
-                    tempPixelValue += (int) ((float) fImageMatrix[i][j] * redWeight);
-                    tempPixelValue += (int) ((float) fImageMatrix[i][j + 1] * greenWeight);
-                    tempPixelValue += (int) ((float) fImageMatrix[i][j + 2] * blueWeight);
-                    tempPixelValue = tempPixelValue / 3;
+                tempPixelValue += (int) ((float) fImageMatrix[i][j] * redWeight);
+                tempPixelValue += (int) ((float) fImageMatrix[i][j + 1] * greenWeight);
+                tempPixelValue += (int) ((float) fImageMatrix[i][j + 2] * blueWeight);
+                tempPixelValue = tempPixelValue / 3;
 
-                    fImageMatrix[i][j] = tempPixelValue;
-                    fImageMatrix[i][j + 1] = tempPixelValue;
-                    fImageMatrix[i][j + 2] = tempPixelValue;
-                }
+                fImageMatrix[i][j] = tempPixelValue;
+                fImageMatrix[i][j + 1] = tempPixelValue;
+                fImageMatrix[i][j + 2] = tempPixelValue;
             }
+
         }
-
-        std::cout << "Image " << fFileName << " converted to grayscale. " << std::endl;
-    }
-    else
-    {
-        std::cout << "Image " << fFileName << " is already grayscale. No changes will be made!" << std::endl;
-        return;
     }
 
-    if (imageIsAlreadyGrayscale)
-    {
-        std::cout << "The image is in a .ppma format but is already grayscale. No changes will be made. " << std::endl;
-    }
-
+    return !imageIsAlreadyGrayscale;
 }
