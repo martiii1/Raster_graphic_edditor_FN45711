@@ -686,6 +686,8 @@ void ImageData::makeImageGrayscale()
                 }
             }
         }
+
+        std::cout << "Image " << fFileName << " converted to grayscale. " << std::endl;
     }
     else
     {

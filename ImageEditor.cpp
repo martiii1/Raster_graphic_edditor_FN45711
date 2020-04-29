@@ -88,7 +88,7 @@ void ImageEditor::CommandCaller()
 
         if (strcmp(token, "grayscale") == 0)    // grayscale is called
         {
-
+            grayscaleCurrentSession();
 
         }
 
@@ -275,7 +275,6 @@ void ImageEditor::rotateLeft()
 void ImageEditor::saveImagesInCurrentSession()
 {
     fSessions[fCurrentSession].saveImages();
-
 }
 
 void ImageEditor::rotateRight()
@@ -289,4 +288,9 @@ void ImageEditor::saveImagesAsInCurrentSession()
     fSessions[fCurrentSession].saveImagesAs();
 
 
+}
+
+void ImageEditor::grayscaleCurrentSession()
+{
+    fSessions[fCurrentSession].grayscaleSession();
 }

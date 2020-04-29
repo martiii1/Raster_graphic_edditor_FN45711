@@ -36,5 +36,7 @@ private:
     void rotateLeft();
 
     void rotateRight();
+
+    void grayscaleCurrentSession();
 };
 

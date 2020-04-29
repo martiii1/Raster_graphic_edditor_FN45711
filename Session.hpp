@@ -22,24 +22,35 @@ public:
     bool addImage(char *name);
 
     void setOpen();
+
     void setClose();
+
     void setSessionID(int newID);
+
     void setSize(unsigned int size);
+
     void setNumberOfChanges(unsigned short int newNumber);
 
 
     int getSessionID() const;
-    unsigned int getSize() const ;
+
+    unsigned int getSize() const;
+
     unsigned short int getNumberOfChanges() const;
 
     bool isSessionOpen() const;
+
     void printSessionInfo() const;
 
     void rotateSessionLeft();
+
     void rotateSessionRight();
+
     void saveImages();
+
     void saveImagesAs();
 
+    void grayscaleSession();
 
 private:
     unsigned int fSize;

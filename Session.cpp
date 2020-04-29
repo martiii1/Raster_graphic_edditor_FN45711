@@ -260,3 +260,11 @@ void Session::saveImagesAs()
         fImages[i].saveAsImageToFile();
     }
 }
+
+void Session::grayscaleSession()
+{
+    for(int i=0;i<fSize;i++)
+    {
+        fImages[i].makeImageGrayscale();
+    }
+}
