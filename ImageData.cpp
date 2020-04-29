@@ -547,7 +547,7 @@ void ImageData::saveImageToFile()
 {
     std::ofstream writefile;
     char tempNewName[MAX_FILE_NAME_SIZE];
-    std::strcpy(tempNewName,fFileName);
+    std::strcpy(tempNewName, fFileName);
 
     writefile.open(TempImageName, std::ofstream::trunc);
 
@@ -557,8 +557,8 @@ void ImageData::saveImageToFile()
     writeMatrixToFile(writefile);
 
     writefile.close();
-    remove( tempNewName );
-    rename(TempImageName, tempNewName );
+    remove(tempNewName);
+    rename(TempImageName, tempNewName);
 }
 
 
@@ -628,16 +628,16 @@ void ImageData::saveAsImageToFile() // TODO add a check for forbidden symbols in
     std::ofstream writefile;
     char tempNewName[MAX_FILE_NAME_SIZE];
 
-    std::cout << std::endl <<"Enter a new name for the image file( " << fFileName <<" )  :  ";
+    std::cout << std::endl << "Enter a new name for the image file( " << fFileName << " )  :  ";
     std::cin >> tempNewName;
 
-    if(fImageFormat == PBMA)
+    if (fImageFormat == PBMA)
         std::strcat(tempNewName, ".pbm");
 
-    if(fImageFormat == PGMA)
+    if (fImageFormat == PGMA)
         std::strcat(tempNewName, ".pgm");
 
-    if(fImageFormat == PPMA)
+    if (fImageFormat == PPMA)
         std::strcat(tempNewName, ".ppm");
 
     std::cout << fFileName << " is going to be saved as: " << tempNewName << std::endl;
@@ -650,5 +650,52 @@ void ImageData::saveAsImageToFile() // TODO add a check for forbidden symbols in
     writeMatrixToFile(writefile);
 
     writefile.close();
-    rename(TempImageName, tempNewName );
+    rename(TempImageName, tempNewName);
+}
+
+void ImageData::makeImageGrayscale()
+{
+    // Weight values for nicer image taken from https://www.tutorialspoint.com/dip/grayscale_to_rgb_conversion.htm
+    const float redWeight = 0.3;
+    const float greenWeight = 0.6;
+    const float blueWeight = 0.1;
+
+    unsigned short int tempPixelValue;
+
+    bool imageIsAlreadyGrayscale = true;
+    if (fImageFormat == PPMA)
+    {
+        for (int i = 0; i < fImageHeight; i++)
+        {
+            for (int j = 0; j < fImageWidth; j += 3)
+            {
+                if (!((fImageMatrix[i][j] == fImageMatrix[i][j + 1]) &&  // is true the pixel is gray. !true = false
+                      (fImageMatrix[i][j + 1] == fImageMatrix[i][j + 2]))) // true when the pixel has color
+                {
+                    tempPixelValue = 0;
+                    imageIsAlreadyGrayscale = false;
+
+                    tempPixelValue += (int) ((float) fImageMatrix[i][j] * redWeight);
+                    tempPixelValue += (int) ((float) fImageMatrix[i][j + 1] * greenWeight);
+                    tempPixelValue += (int) ((float) fImageMatrix[i][j + 2] * blueWeight);
+                    tempPixelValue = tempPixelValue / 3;
+
+                    fImageMatrix[i][j] = tempPixelValue;
+                    fImageMatrix[i][j + 1] = tempPixelValue;
+                    fImageMatrix[i][j + 2] = tempPixelValue;
+                }
+            }
+        }
+    }
+    else
+    {
+        std::cout << "Image " << fFileName << " is already grayscale. No changes will be made!" << std::endl;
+        return;
+    }
+
+    if (imageIsAlreadyGrayscale)
+    {
+        std::cout << "The image is in a .ppma format but is already grayscale. No changes will be made. " << std::endl;
+    }
+
 }

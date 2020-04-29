@@ -55,6 +55,8 @@ public:
 
     void saveAsImageToFile();
 
+    void makeImageGrayscale();
+
 private:
     char *fFileName;
     unsigned short int fImageFormat;
