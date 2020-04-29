@@ -57,6 +57,8 @@ public:
 
     void makeImageGrayscale();
 
+    void makeImageMonochrome();
+
 private:
     char *fFileName;
     unsigned short int fImageFormat;

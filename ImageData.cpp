@@ -680,7 +680,7 @@ void ImageData::makeImageGrayscale()
         if (grayscaleMatrix())
             std::cout << "Image " << fFileName << " converted to grayscale. " << std::endl;
         else
-            std::cout << "The image is .ppma format but is already grayscale. No changes will be made."<< std::endl;
+            std::cout << "The image is .ppma format but is already grayscale. No changes will be made." << std::endl;
     }
     else
     {
@@ -726,3 +726,53 @@ bool ImageData::grayscaleMatrix()
 
     return !imageIsAlreadyGrayscale;
 }
+
+void ImageData::makeImageMonochrome()
+{
+    if (fImageFormat == PBMA)
+    {
+        std::cout << "Image " << fFileName << " is already monochrome. No changes will be made! " << std::endl;
+        return;
+    }
+
+    if (fImageFormat == PPMA)
+        grayscaleMatrix();
+
+    unsigned short int average = fPixelMaxValue / 2;
+
+    bool imageIsAlreadyMonochrome = true;
+
+    for (int i = 0; i < fImageHeight; i++)
+    {
+        for (int j = 0; j < fImageWidth * 3; j += 3)
+        {
+            if ((fImageMatrix[i][j] != 0) && (fImageMatrix[i][j] != fPixelMaxValue))
+            {
+                imageIsAlreadyMonochrome = false;
+            }
+
+
+            if (fImageMatrix[i][j] >= average)
+            {
+                fImageMatrix[i][j] = 0;
+                fImageMatrix[i][j + 1] = 0;
+                fImageMatrix[i][j + 2] = 0;
+            }
+            else
+            {
+                fImageMatrix[i][j] = fPixelMaxValue;
+                fImageMatrix[i][j + 1] = fPixelMaxValue;
+                fImageMatrix[i][j + 2] = fPixelMaxValue;
+            }
+
+        }
+
+    }
+
+    if(imageIsAlreadyMonochrome)
+        std::cout << "The image is .ppma format but is already monochrome. No changes will be made." << std::endl;
+    else
+        std::cout << "Image " << fFileName << " converted to grayscale. " << std::endl;
+
+}
+
