@@ -52,6 +52,8 @@ public:
 
     void grayscaleSession();
 
+    void monochromeSession();
+
 private:
     unsigned int fSize;
     int fSessionID;

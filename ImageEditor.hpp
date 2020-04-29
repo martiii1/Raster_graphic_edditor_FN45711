@@ -38,5 +38,7 @@ private:
     void rotateRight();
 
     void grayscaleCurrentSession();
+
+    void monochromeCurrentSession();
 };
 

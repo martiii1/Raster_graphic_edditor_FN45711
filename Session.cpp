@@ -268,3 +268,11 @@ void Session::grayscaleSession()
         fImages[i].makeImageGrayscale();
     }
 }
+
+void Session::monochromeSession()
+{
+    for(int i=0;i<fSize;i++)
+    {
+        fImages[i].makeImageMonochrome();
+    }
+}

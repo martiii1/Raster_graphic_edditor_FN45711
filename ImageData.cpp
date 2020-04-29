@@ -701,6 +701,12 @@ bool ImageData::grayscaleMatrix()
 
     bool imageIsAlreadyGrayscale = true;
 
+    if (fImageFormat != PPMA)
+    {
+        std::cout << "Image " << fFileName << " is already grayscale/monochrome. No changes will be made! " << std::endl;
+        return true;
+    }
+
     for (int i = 0; i < fImageHeight; i++)
     {
         for (int j = 0; j < fImageWidth * 3; j += 3)
@@ -735,24 +741,59 @@ void ImageData::makeImageMonochrome()
         return;
     }
 
+    unsigned int tempImageWidth;
     if (fImageFormat == PPMA)
+    {
         grayscaleMatrix();
+        tempImageWidth = fImageWidth * 3;
+    }
+    else
+    {
+        tempImageWidth = fImageWidth;
+    }
 
-    unsigned short int average = fPixelMaxValue / 2;
-
+    unsigned short int maxPixelUsed = 0;
     bool imageIsAlreadyMonochrome = true;
+
+    if(fImageFormat == PPMA)
+    {
+        for (int i = 0; i < fImageHeight; i++)
+        {
+            for (int j = 0; j < tempImageWidth; j += 3)
+            {
+                if(maxPixelUsed < fImageMatrix[i][j])
+                    maxPixelUsed = fImageMatrix[i][j];
+            }
+        }
+    }
+
+    if(fImageFormat == PGMA)
+    {
+        for (int i = 0; i < fImageHeight; i++)
+        {
+            for (int j = 0; j < fImageWidth; j += 3)
+            {
+                if(maxPixelUsed < fImageMatrix[i][j])
+                    maxPixelUsed = fImageMatrix[i][j];
+            }
+        }
+    }
+
+
 
     for (int i = 0; i < fImageHeight; i++)
     {
         for (int j = 0; j < fImageWidth * 3; j += 3)
         {
+
+
             if ((fImageMatrix[i][j] != 0) && (fImageMatrix[i][j] != fPixelMaxValue))
             {
                 imageIsAlreadyMonochrome = false;
             }
 
 
-            if (fImageMatrix[i][j] >= average)
+            if (fImageMatrix[i][j] <= maxPixelUsed / 2)
             {
                 fImageMatrix[i][j] = 0;
                 fImageMatrix[i][j + 1] = 0;
@@ -772,7 +813,7 @@ void ImageData::makeImageMonochrome()
     if(imageIsAlreadyMonochrome)
         std::cout << "The image is .ppma format but is already monochrome. No changes will be made." << std::endl;
     else
-        std::cout << "Image " << fFileName << " converted to grayscale. " << std::endl;
+        std::cout << "Image " << fFileName << " converted to monochrome. " << std::endl;
 
 }
 

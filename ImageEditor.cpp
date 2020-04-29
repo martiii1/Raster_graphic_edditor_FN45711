@@ -89,13 +89,11 @@ void ImageEditor::CommandCaller()
         if (strcmp(token, "grayscale") == 0)    // grayscale is called
         {
             grayscaleCurrentSession();
-
         }
 
         if (strcmp(token, "monochrome") == 0)   // monochrome is called
         {
-
-
+            monochromeCurrentSession();
         }
 
         if (strcmp(token, "negative") == 0)     // negative is called
@@ -293,4 +291,9 @@ void ImageEditor::saveImagesAsInCurrentSession()
 void ImageEditor::grayscaleCurrentSession()
 {
     fSessions[fCurrentSession].grayscaleSession();
+}
+
+void ImageEditor::monochromeCurrentSession()
+{
+    fSessions[fCurrentSession].monochromeSession();
 }
