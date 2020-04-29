@@ -685,7 +685,7 @@ void ImageData::makeImageGrayscale()
     {
         for (int i = 0; i < fImageHeight; i++)
         {
-            for (int j = 0; j < fImageWidth; j += 3)
+            for (int j = 0; j < fImageWidth * 3; j += 3)
             {
                 if (!((fImageMatrix[i][j] == fImageMatrix[i][j + 1]) &&  // is true the pixel is gray. !true = false
                       (fImageMatrix[i][j + 1] == fImageMatrix[i][j + 2]))) // true when the pixel has color
