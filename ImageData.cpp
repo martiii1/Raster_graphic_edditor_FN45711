@@ -525,19 +525,31 @@ void ImageData::writeMatrixToFile(std::ofstream &file)
     unsigned int tempWidth;
     if (fImageFormat == PPMA)
         tempWidth = fImageWidth * 3;
-    tempWidth = fImageWidth;
+    else
+        tempWidth = fImageWidth;
+
+    size_t counter=0;
+
+    unsigned short int newLineLimit;
+    if(fImageFormat == PPMA)
+        newLineLimit = 12;
+    if(fImageFormat == PGMA)
+        newLineLimit = 19;
+    if(fImageFormat == PBMA)
+        newLineLimit = 39;
 
     for (int i = 0; i < fImageHeight; i++)
     {
         for (int j = 0; j < tempWidth; j++)
         {
-            if (j >= 35 && j % 35 == 0)
+            if (counter >= newLineLimit && counter % newLineLimit == 0)
                 file << std::endl; // the file must be consisted of lines no longer than 70 characters
 
             file << fImageMatrix[i][j] << " ";
+            counter++;
         }
 
-        file << std::endl;
+        //file << std::endl;
     }
 }
 
@@ -553,6 +565,9 @@ void ImageData::saveImageToFile()
 
     writefile << "P" << fImageFormat << std::endl;
     writefile << fImageWidth << " " << fImageHeight << std::endl;
+
+    if(fImageFormat != PBMA)
+        writefile << fPixelMaxValue << std::endl;
 
     writeMatrixToFile(writefile);
 
@@ -646,6 +661,9 @@ void ImageData::saveAsImageToFile() // TODO add a check for forbidden symbols in
 
     writefile << "P" << fImageFormat << std::endl;
     writefile << fImageWidth << " " << fImageHeight << std::endl;
+
+    if(fImageFormat != PBMA)
+        writefile << fPixelMaxValue << std::endl;
 
     writeMatrixToFile(writefile);
 

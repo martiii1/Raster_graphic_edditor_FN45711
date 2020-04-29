@@ -159,17 +159,17 @@ void ImageEditor::CommandCaller()
 
         }
 
-        if (strcmp(token, "save") == 0)         // close  is called
+        if (strcmp(token, "save") == 0)         // save is called
         {
             token = strtok(nullptr, " ");
-            if (strcmp(token, "as") == 0)       // rotate is called
-            {
-                saveImagesAsInCurrentSession();
-                endOfProgram = true;
-            }
-            else if (token == nullptr)
+            if (token == nullptr)
             {
                 saveImagesInCurrentSession();
+                endOfProgram = true;
+            }
+            else if (strcmp(token, "as") == 0)
+            {
+                saveImagesAsInCurrentSession();
                 endOfProgram = true;
             }
             else
