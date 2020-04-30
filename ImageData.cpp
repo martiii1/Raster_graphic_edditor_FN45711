@@ -480,7 +480,6 @@ void ImageData::rotateImageLeft()
                 tempNewMatrix[i][j] = fImageMatrix[j][fImageWidth - i - 1]; // -1 because [][] starts at 00
             }
         }
-
     }
 
     deleteImageMatrix(fImageWidth, fImageHeight);
@@ -530,7 +529,7 @@ void ImageData::writeMatrixToFile(std::ofstream &file)
 
     size_t counter = 0;
 
-    unsigned short int newLineLimit;
+    unsigned short int newLineLimit; // maybe change
     if (fImageFormat == PPMA)
         newLineLimit = 12;
     if (fImageFormat == PGMA)
