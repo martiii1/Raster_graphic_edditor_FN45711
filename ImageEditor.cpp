@@ -52,142 +52,156 @@ void ImageEditor::newSession()
 
 void ImageEditor::CommandCaller()
 {
+    const char* invalidInputErrorMessage = "Invalid input! Try again \n";
+    const char* unknownErrorMessage = "Unknown error has occurred. Please try again. \n";
+
+
     char *consoleCommands = new char[MAX_CONSOLE_COMMANDS_LENGTH];
     char *consoleCommandsLine = new char[MAX_CONSOLE_COMMANDS_LENGTH];
     char *token;
 
-    bool correctInput = false;
     bool endOfProgram = false;
 
-    while (!correctInput || !endOfProgram)
+    while (!endOfProgram)
     {
-        correctInput = true;
 
-        std::cout << "Please enter a command (max " << MAX_CONSOLE_COMMANDS_LENGTH << " symbols) " << std::endl;
-        std::cin.getline(consoleCommands, MAX_CONSOLE_COMMANDS_LENGTH);
-        strcpy(consoleCommandsLine, consoleCommands);
-
-        token = strtok(consoleCommands, " ");
-        if (token == nullptr)
+        try
         {
-            correctInput = false;
-            std::cout << "Invalid input! Try again" << std::endl;
-            continue;
-        }
+            std::cout << std::endl
+                      << "Please enter a command (max " << MAX_CONSOLE_COMMANDS_LENGTH << " symbols) "
+                      << std::endl;
+            std::cin.getline(consoleCommands, MAX_CONSOLE_COMMANDS_LENGTH);
+            strcpy(consoleCommandsLine, consoleCommands);
 
-        if (strcmp(token, "load") == 0)        // load is called
-        {
-            if (!load(consoleCommandsLine))
-            {
-                std::cout << "Invalid input! Try again" << std::endl;
-                correctInput = false;
-                continue;
-            }
-        }
-
-
-        if (strcmp(token, "grayscale") == 0)    // grayscale is called
-        {
-            grayscaleCurrentSession();
-        }
-
-        if (strcmp(token, "monochrome") == 0)   // monochrome is called
-        {
-            monochromeCurrentSession();
-        }
-
-        if (strcmp(token, "negative") == 0)     // negative is called
-        {
-
-
-        }
-
-        if (strcmp(token, "rotate") == 0)       // rotate is called
-        {
-            token = strtok(nullptr, " ");
-            if (strcmp(token, "left") == 0)       // rotate left
-            {
-                rotateLeft();
-            }
-            else if (strcmp(token, "right") == 0)       // rotate right
-            {
-                rotateRight();
-            }
-            else
-            {
-                continue;
-            }
-
-
-        }
-
-        if (strcmp(token, "undo") == 0)         // undo is called
-        {
-
-
-        }
-
-        if (strcmp(token, "add") == 0)          // add is called
-        {
-
-
-        }
-
-        if (strcmp(token, "session") == 0)      // session is called
-        {
-
-
-        }
-
-        if (strcmp(token, "switch") == 0)       // switch is called
-        {
-
-
-        }
-
-        if (strcmp(token, "collage") == 0)      // collage  is called
-        {
-
-
-        }
-
-        if (strcmp(token, "close") == 0)        // close  is called
-        {
-
-
-        }
-
-        if (strcmp(token, "save") == 0)         // save is called
-        {
-            token = strtok(nullptr, " ");
+            token = strtok(consoleCommands, " ");
             if (token == nullptr)
             {
-                saveImagesInCurrentSession();
-                endOfProgram = true;
-            }
-            else if (strcmp(token, "as") == 0)
-            {
-                saveImagesAsInCurrentSession();
-                endOfProgram = true;
-            }
-            else
-            {
+                throw std::invalid_argument(invalidInputErrorMessage);
                 continue;
             }
 
+            if (strcmp(token, "load") == 0)        // load is called
+            {
+                if (!load(consoleCommandsLine))
+                {
+                    throw std::invalid_argument(invalidInputErrorMessage);
+                    continue;
+                }
+            }
 
 
+            if (strcmp(token, "grayscale") == 0)    // grayscale is called
+            {
+                grayscaleCurrentSession();
+            }
+
+            if (strcmp(token, "monochrome") == 0)   // monochrome is called
+            {
+                monochromeCurrentSession();
+            }
+
+            if (strcmp(token, "negative") == 0)     // negative is called
+            {
+
+
+            }
+
+            if (strcmp(token, "rotate") == 0)       // rotate is called
+            {
+                token = strtok(nullptr, " ");
+                if (strcmp(token, "left") == 0)       // rotate left
+                {
+                    rotateLeft();
+                }
+                else if (strcmp(token, "right") == 0)       // rotate right
+                {
+                    rotateRight();
+                }
+                else
+                {
+                    throw std::invalid_argument(invalidInputErrorMessage);
+                }
+
+
+            }
+
+            if (strcmp(token, "undo") == 0)         // undo is called
+            {
+
+
+            }
+
+            if (strcmp(token, "add") == 0)          // add is called
+            {
+
+
+            }
+
+            if (strcmp(token, "session") == 0)      // session is called
+            {
+
+
+            }
+
+            if (strcmp(token, "switch") == 0)       // switch is called
+            {
+
+
+            }
+
+            if (strcmp(token, "collage") == 0)      // collage  is called
+            {
+
+
+            }
+
+            if (strcmp(token, "close") == 0)        // close  is called
+            {
+
+
+            }
+
+            if (strcmp(token, "save") == 0)         // save is called
+            {
+                token = strtok(nullptr, " ");
+                if (token == nullptr)
+                {
+                    saveImagesInCurrentSession();
+                    endOfProgram = true;
+                }
+                else if (strcmp(token, "as") == 0)
+                {
+                    saveImagesAsInCurrentSession();
+                    endOfProgram = true;
+                }
+                else
+                {
+                    throw std::invalid_argument(invalidInputErrorMessage);
+                }
+
+
+            }
+
+            if (strcmp(token, "help") == 0)
+            {
+                showAllSessions();
+
+            }
         }
-
-        if (strcmp(token, "help") == 0)         //
+        catch (std::invalid_argument& message)
         {
-            showAllSessions();
-
+            std::cout << message.what();
+        }
+        catch (...)
+        {
+            std::cout << unknownErrorMessage;
         }
 
 
     } // end of while
 
+
+    delete[] invalidInputErrorMessage;
     delete[] consoleCommands;
 }
 
@@ -266,6 +280,7 @@ bool ImageEditor::switchSession(int sessionID)
 
 void ImageEditor::rotateLeft()
 {
+
     fSessions[fCurrentSession].rotateSessionLeft(); // TODO add changes made!
 
 }
@@ -296,4 +311,9 @@ void ImageEditor::grayscaleCurrentSession()
 void ImageEditor::monochromeCurrentSession()
 {
     fSessions[fCurrentSession].monochromeSession();
+}
+
+void ImageEditor::rotateImage()
+{
+
 }

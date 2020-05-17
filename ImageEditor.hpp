@@ -37,6 +37,8 @@ private:
 
     void rotateRight();
 
+    void rotateImage();
+
     void grayscaleCurrentSession();
 
     void monochromeCurrentSession();
