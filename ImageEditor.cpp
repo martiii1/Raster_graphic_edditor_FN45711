@@ -282,8 +282,14 @@ bool ImageEditor::add(char *input) // Adds an image to the current session.
         return false;
     }
 
-    if (!fSessions[fCurrentSession].addImage(token))
-        return false;
+    try
+    {
+        fSessions[fCurrentSession].addImage(token);
+    }
+    catch (...)
+    {
+        throw;
+    }
 
     std::cout << std::endl;
     return true;
