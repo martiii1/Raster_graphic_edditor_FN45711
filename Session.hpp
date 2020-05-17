@@ -19,7 +19,7 @@ public:
 
     ~Session();
 
-    bool addImage(char *name);
+    void addImage(char *name);
 
     void setOpen();
 

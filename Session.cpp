@@ -73,12 +73,8 @@ void Session::changesInitializer()
 
 void Session::resizeSession()
 {
-    ImageData *tempImages = new(std::nothrow) ImageData[fCapacity * 2];
-    if (tempImages == nullptr)
-    {
-        std::cout << "Error while allocating memory for bigger session! " << std::endl;
-        return;
-    }
+    ImageData *tempImages = new ImageData[fCapacity * 2];
+
     fCapacity = fCapacity * 2;
 
     for (unsigned int i = 0; i < fSize; i++)
@@ -90,24 +86,43 @@ void Session::resizeSession()
     fImages = tempImages;
 }
 
-bool Session::addImage(char *name)
+void Session::addImage(char *name)
 {
-    if(fImages == nullptr)
-        fImages = new(std::nothrow) ImageData[fCapacity];
-
-    if (fSize == fCapacity)
-        resizeSession();
-
-    if(!fImages[fSize].loadImage(name))
+    try
     {
-        return false;
-    }
-    //if(fImages[fSize].getimagestatst == BROKEN)       TODO!!!!!!
-        //return true;***
+        if (fImages == nullptr)
+            fImages = new ImageData[fCapacity];
 
+        if (fSize == fCapacity)
+        {
+            try
+            {
+                resizeSession();
+            }
+            catch (...)
+            {
+                throw;
+            }
+        }
+
+        try
+        {
+            fImages[fSize].loadImage(name);
+        }
+        catch (...)
+        {
+            throw;
+        }
+
+        //if(fImages[fSize].getimagestatst == BROKEN)       TODO!!!!!!
+        //return true;***
+    }
+    catch (...)
+    {
+        throw;
+    }
     std::cout <<fImages[fSize].getFileName()<< " successfully loaded,  ";
     fSize++;
-    return true;
 }
 
 

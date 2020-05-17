@@ -18,12 +18,13 @@ private:
     unsigned int fNextSession;
     unsigned int fCurrentSession;
 
+    void handle_exception();
 
     void newSession();
 
     void CommandCaller();
 
-    bool load(char *input);
+    void load(char *input);
 
     void saveImagesInCurrentSession(); // TODO add cout-s and checks
 

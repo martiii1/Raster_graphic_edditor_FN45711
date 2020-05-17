@@ -85,17 +85,21 @@ void ImageData::copyImage(const ImageData &otherImage)
     }
 }
 
-bool ImageData::loadImage(char *FileName)
+void ImageData::loadImage(char *FileName)
 {
 
-    fFileName = new(std::nothrow) char[strlen(FileName) + 1];
+    try
     {
-        if (fFileName == nullptr)
-        {
-            std::cout << "Error while allocating memory! " << std::endl;
-            delImage();
-            return false;
-        }
+        fFileName = new char[strlen(FileName) + 1];
+    }
+    catch (std::bad_alloc&)
+    {
+        delImage();
+        throw;
+    }
+    catch (...)
+    {
+        throw std::bad_exception();
     }
 
     strcpy(fFileName, FileName);
@@ -104,10 +108,9 @@ bool ImageData::loadImage(char *FileName)
 
     if (!image.is_open() || !image.good())
     {
-        std::cout << "Can't open the file!" << std::endl;
+        //std::cout << "Can't open the file!" << std::endl;
         image.close();
-        //delImage();
-        return false;
+        throw std::invalid_argument("Error while opening the image");
     }
 
     switch (getImageFormat(image))
@@ -133,9 +136,7 @@ bool ImageData::loadImage(char *FileName)
     image.close();
 
     if (fImageFormat == BROKEN)
-        return false;
-
-    return true;
+        throw std::exception("Image file corrupted");
 }
 
 void ImageData::delImage()

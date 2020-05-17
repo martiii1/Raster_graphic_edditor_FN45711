@@ -28,7 +28,7 @@ public:
 
     char *getFileName();
 
-    bool loadImage(char *FileName);
+    void loadImage(char *FileName);
 
     void delImage();
 

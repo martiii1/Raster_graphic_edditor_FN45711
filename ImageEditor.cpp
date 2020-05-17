@@ -52,8 +52,9 @@ void ImageEditor::newSession()
 
 void ImageEditor::CommandCaller()
 {
-    const char* invalidInputErrorMessage = "Invalid input! Try again \n";
-    const char* unknownErrorMessage = "Unknown error has occurred. Please try again. \n";
+    const char *invalidInputErrorMessage = "Invalid input! Try again \n";
+    const char *invalidAllocErrorMessage = "Invalid input! Try again \n";
+
 
 
     char *consoleCommands = new char[MAX_CONSOLE_COMMANDS_LENGTH];
@@ -71,21 +72,28 @@ void ImageEditor::CommandCaller()
                       << "Please enter a command (max " << MAX_CONSOLE_COMMANDS_LENGTH << " symbols) "
                       << std::endl;
             std::cin.getline(consoleCommands, MAX_CONSOLE_COMMANDS_LENGTH);
+
             strcpy(consoleCommandsLine, consoleCommands);
 
             token = strtok(consoleCommands, " ");
             if (token == nullptr)
             {
                 throw std::invalid_argument(invalidInputErrorMessage);
-                continue;
             }
 
             if (strcmp(token, "load") == 0)        // load is called
             {
-                if (!load(consoleCommandsLine))
+                try
                 {
-                    throw std::invalid_argument(invalidInputErrorMessage);
-                    continue;
+                    load(consoleCommandsLine);
+                }
+                catch (std::bad_alloc &)
+                {
+                    throw std::exception(invalidAllocErrorMessage);
+                }
+                catch (...)
+                {
+                    throw;
                 }
             }
 
@@ -188,13 +196,11 @@ void ImageEditor::CommandCaller()
 
             }
         }
-        catch (std::invalid_argument& message)
-        {
-            std::cout << message.what();
-        }
+
+
         catch (...)
         {
-            std::cout << unknownErrorMessage;
+            handle_exception();
         }
 
 
@@ -205,24 +211,58 @@ void ImageEditor::CommandCaller()
     delete[] consoleCommands;
 }
 
-bool ImageEditor::load(char *input)
+void ImageEditor::handle_exception()
 {
+    const char *invalidFileErrorMessage = "The Image file was not supported or corrupted \n";
+    const char *unknownErrorMessage = "Unknown error has occurred. Please try again. \n";
+
+    try
+    {
+        throw;
+    }
+    catch (std::invalid_argument &message)
+    {
+        std::cout << message.what();
+    }
+
+    catch (std::bad_exception&)
+    {
+        std::cout << unknownErrorMessage;
+    }
+    catch (std::exception &message)
+    {
+        std::cout << message.what() << "\n";
+    }
+    catch (...)
+    {
+        std::cout << unknownErrorMessage;
+    }
+}
+
+void ImageEditor::load(char *input)
+{
+    const char *invalidImageName = "You have to specify a valid image name! \n";
+
     char *token;
-    token = strtok(input, " "); // skips the first word
+    token = strtok(input, " "); // skips the first word ("load")
 
     token = strtok(nullptr, " "); // if there is nothing after "load"
     if (token == nullptr)
-    {
-        return false;
-    }
+        throw std::invalid_argument(invalidImageName);
 
     newSession();
     fCurrentSession = fNextSession;
 
     while (token != nullptr)
     {
-        if (!fSessions[fCurrentSession].addImage(token))
-            return false;
+        try
+        {
+            fSessions[fCurrentSession].addImage(token);
+        }
+        catch (...)
+        {
+            return;
+        }
 
         token = strtok(nullptr, " ");
     }
