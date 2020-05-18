@@ -97,7 +97,7 @@ void ImageData::loadImage(char *FileName)
         delImage();
         throw;
     }
-    catch (...)
+    catch (std::exception&)
     {
         throw std::bad_exception();
     }

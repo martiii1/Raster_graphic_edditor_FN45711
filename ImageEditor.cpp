@@ -77,36 +77,19 @@ void ImageEditor::CommandCaller()
 
             token = strtok(consoleCommands, " ");
             if (token == nullptr)
-            {
                 throw std::invalid_argument(invalidInputErrorMessage);
-            }
+
 
             if (strcmp(token, "load") == 0)        // load is called
-            {
-                try
-                {
-                    load(consoleCommandsLine);
-                }
-                catch (std::bad_alloc &)
-                {
-                    throw std::exception(invalidAllocErrorMessage);
-                }
-                catch (...)
-                {
-                    throw;
-                }
-            }
+                load(consoleCommandsLine);
 
 
             if (strcmp(token, "grayscale") == 0)    // grayscale is called
-            {
                 grayscaleCurrentSession();
-            }
+
 
             if (strcmp(token, "monochrome") == 0)   // monochrome is called
-            {
                 monochromeCurrentSession();
-            }
 
             if (strcmp(token, "negative") == 0)     // negative is called
             {
@@ -258,14 +241,7 @@ void ImageEditor::load(char *input)
 
     while (token != nullptr)
     {
-        try
-        {
-            fSessions[fCurrentSession].addImage(token);
-        }
-        catch (...)
-        {
-            return;
-        }
+        fSessions[fCurrentSession].addImage(token);
 
         token = strtok(nullptr, " ");
     }
@@ -285,14 +261,7 @@ bool ImageEditor::add(char *input) // Adds an image to the current session.
         return false;
     }
 
-    try
-    {
-        fSessions[fCurrentSession].addImage(token);
-    }
-    catch (...)
-    {
-        throw;
-    }
+    fSessions[fCurrentSession].addImage(token);
 
     std::cout << std::endl;
     return true;

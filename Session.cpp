@@ -88,39 +88,19 @@ void Session::resizeSession()
 
 void Session::addImage(char *name)
 {
-    try
-    {
         if (fImages == nullptr)
             fImages = new ImageData[fCapacity];
 
         if (fSize == fCapacity)
-        {
-            try
-            {
-                resizeSession();
-            }
-            catch (...)
-            {
-                throw;
-            }
-        }
+            resizeSession();
 
-        try
-        {
-            fImages[fSize].loadImage(name);
-        }
-        catch (...)
-        {
-            throw;
-        }
+
+        fImages[fSize].loadImage(name);
+
 
         //if(fImages[fSize].getimagestatst == BROKEN)       TODO!!!!!!
         //return true;***
-    }
-    catch (...)
-    {
-        throw;
-    }
+
     std::cout <<fImages[fSize].getFileName()<< " successfully loaded,  ";
     fSize++;
 }
