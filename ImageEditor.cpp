@@ -117,6 +117,7 @@ void ImageEditor::CommandCaller()
             if (strcmp(token, "rotate") == 0)       // rotate is called
             {
                 token = strtok(nullptr, " ");
+
                 if(token == nullptr)
                     throw std::exception(invalidInputErrorMessage);
                 if (strcmp(token, "left") == 0)       // rotate left
@@ -200,7 +201,7 @@ void ImageEditor::CommandCaller()
         }
 
 
-        catch (...)
+        catch (std::exception&)
         {
             handle_exception();
         }
