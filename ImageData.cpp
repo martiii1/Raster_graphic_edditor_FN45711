@@ -407,12 +407,7 @@ void ImageData::skipComments(std::ifstream &file)
 
 int **ImageData::allocateMatrix(unsigned int width, unsigned int height)
 {
-    int **Matrix = new(std::nothrow) int *[height];
-    if (Matrix == nullptr)
-    {
-        std::cout << "Error while allocating memory!" << std::endl;
-        return nullptr;
-    }
+    int **Matrix = new int *[height];
 
 
     for (unsigned int i = 0; i < height; i++)

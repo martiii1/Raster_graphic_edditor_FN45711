@@ -182,8 +182,6 @@ void ImageEditor::CommandCaller()
 
             }
         }
-
-
         catch (std::exception&)
         {
             handle_exception();
