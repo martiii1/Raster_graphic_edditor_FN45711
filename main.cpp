@@ -10,6 +10,8 @@
         ImageEditor asd;
         asd.StartImageEditor();
 
+        std::cout << "ENDDDDDDD";
+
 
         return 0;
     }

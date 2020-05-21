@@ -18,8 +18,6 @@ void ImageEditor::StartImageEditor()
     std::cout << "Raster graphic editor started." << std::endl;
 
     CommandCaller();
-
-
 }
 
 void ImageEditor::newSession()
@@ -181,6 +179,12 @@ void ImageEditor::CommandCaller()
                 showAllSessions();
 
             }
+
+            if (strcmp(token, "exit") == 0)
+            {
+                endOfProgram = true;
+            }
+
         }
         catch (std::exception&)
         {
@@ -190,9 +194,9 @@ void ImageEditor::CommandCaller()
 
     } // end of while
 
-
-    delete[] invalidInputErrorMessage;
+    delete[] consoleCommandsLine;
     delete[] consoleCommands;
+
 }
 
 void ImageEditor::handle_exception()
