@@ -4,14 +4,10 @@
 // github repo https://github.com/martiii1/Raster_graphic_edditor_FN45711
 
 
-
     int main()
     {
         ImageEditor asd;
         asd.StartImageEditor();
-
-        std::cout << "ENDDDDDDD";
-
 
         return 0;
     }
