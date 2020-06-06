@@ -59,6 +59,8 @@ public:
 
     void makeImageMonochrome();
 
+    void makeImageNegative();
+
     void createCollage(ImageData &image1, ImageData &image2,const char *outImageName, bool isVertical);
 
     void collageVerticalMatrix(ImageData &image1, ImageData &image2);

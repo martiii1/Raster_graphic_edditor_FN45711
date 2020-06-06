@@ -61,22 +61,6 @@ void Session::delMem()
     delete[] fImagesPrevious;
 }
 
-void Session::changesInitializer()
-{
-    fChangesMade = new(std::nothrow) char *[CHANGES_BUFFER];
-    if (fChangesMade == nullptr)
-    {
-        std::cout << "Memory fail(for changes)!" << std::endl;
-        return;
-    }
-
-    for (int i = 0; i < CHANGES_BUFFER; i++)
-        fChangesMade[i] = new(std::nothrow) char[MAX_COMMAND_LENGTH];
-    if (fChangesMade == nullptr);
-    // TO DO ...........................................................//// TODO
-
-}
-
 
 void Session::resizeSession()
 {
@@ -219,7 +203,7 @@ void Session::saveImages()
 
     for (int i = 0; i < fSize; i++)
     {
-        fImages[i].saveImageToFile(); // TODO !
+        fImages[i].saveImageToFile();
     }
 
 }
@@ -340,4 +324,16 @@ void Session::undoLastChange()
 
     std::cout << "The last change ( " << fChangesMade[fNumberOfChanges-1] << " ) is reversed! \n";
     removeLastChange();
+}
+
+void Session::negativeSession()
+{
+    for (int i = 0; i < fSize; i++)
+    {
+        fImagesPrevious[i] = fImages[i];
+        fImages[i].makeImageNegative();
+    }
+    addNewChange("Images converted to negatives");
+    std::cout << "All images converted to negatives. \n";
+
 }

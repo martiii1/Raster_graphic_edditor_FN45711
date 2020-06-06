@@ -157,6 +157,8 @@ void ImageData::readPBMA(std::ifstream &file)
 
     getDimensions(file);
 
+    fPixelMaxValue = 1;
+
     fImageMatrix = allocateMatrix(fImageWidth, fImageHeight);
 
     getPBMApixels(file);
@@ -916,5 +918,29 @@ void ImageData::collageHorizontalMatrix(ImageData &image1, ImageData &image2)
 
     if (fImageFormat == PPMA)
         fImageWidth = fImageWidth / 3;
+}
+
+void ImageData::makeImageNegative()
+{
+    if (fImageFormat == PBMA || fImageFormat == PGMA)
+    {
+        for (int i = 0; i < fImageHeight; i++)
+        {
+            for (int j = 0; j < fImageWidth; j++)
+            {
+                fImageMatrix[i][j] = fPixelMaxValue - fImageMatrix[i][j];
+            }
+        }
+        return;
+    }
+
+
+    for (int i = 0; i < fImageHeight; i++)
+    {
+        for (int j = 0; j < fImageWidth * 3; j++)
+        {
+            fImageMatrix[i][j] = fPixelMaxValue - fImageMatrix[i][j];
+        }
+    }
 }
 

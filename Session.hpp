@@ -55,7 +55,7 @@ public:
 
     void undoLastChange();
 
-    //void negativeSession();
+    void negativeSession();
 
     void addCollage(const char *image1Name, const char *image2Name, const char *outImageName, bool isVertical);
 
@@ -75,8 +75,6 @@ private:
     void copyFunc(const Session &other);
 
     void delMem();
-
-    void changesInitializer();
 
     void resizeSession();
 };

@@ -26,7 +26,7 @@ private:
 
     void load(char *input);
 
-    void saveImagesInCurrentSession(); // TODO add cout-s and checks
+    void saveImagesInCurrentSession();
 
     void saveImagesAsInCurrentSession();
 
@@ -45,5 +45,9 @@ private:
     void grayscaleCurrentSession();
 
     void monochromeCurrentSession();
+
+    void negativeCurrentSession();
+
+    void help();
 };
 

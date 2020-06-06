@@ -86,9 +86,7 @@ void ImageEditor::CommandCaller()
 
 
             if (strcmp(token, "negative") == 0)     // negative is called
-            {
-
-            }
+            negativeCurrentSession();
 
 
             if (strcmp(token, "rotate") == 0)       // rotate is called
@@ -181,7 +179,7 @@ void ImageEditor::CommandCaller()
 
 
             if (strcmp(token, "help") == 0)
-                showAllSessions();
+                help();
 
 
             if (strcmp(token, "exit") == 0)
@@ -287,7 +285,7 @@ void ImageEditor::switchSession(int sessionID)
 void ImageEditor::rotateLeft()
 {
 
-    fSessions[fCurrentSession].rotateSessionLeft(); // TODO add changes made!
+    fSessions[fCurrentSession].rotateSessionLeft();
 
 }
 
@@ -298,7 +296,7 @@ void ImageEditor::saveImagesInCurrentSession()
 
 void ImageEditor::rotateRight()
 {
-    fSessions[fCurrentSession].rotateSessionRight(); // TODO add changes made!
+    fSessions[fCurrentSession].rotateSessionRight();
 }
 
 void ImageEditor::saveImagesAsInCurrentSession()
@@ -381,4 +379,37 @@ void ImageEditor::collage(char *input)
     }
 
 
+}
+
+void ImageEditor::negativeCurrentSession()
+{
+    fSessions[fCurrentSession].negativeSession();
+}
+
+void ImageEditor::help()
+{
+    std::cout << "The image editor supports the following commands:\n\n";
+
+    std::cout << "Parameters used in the help instructions.\n\n";
+    std::cout << "The parameter <image> is [imageName].[ppm/pgm/pbm]\n\n ";
+    std::cout << "The parameter <direction> is \"left\" or \"right\" \n\n ";
+    std::cout << "The parameter <session ID> is an integer\n\n";
+    std::cout << "The parameter <collage name> is the name of the new photo(the collage)\n\n";
+
+    std::cout << "Commands:\n\n";
+    std::cout << "load <image> -> loads a new session with <image>\n\n";
+    std::cout << "add <image> -> adds <image> to current session\n\n";
+    std::cout << "save -> saves all images in the current session with their default names\n\n";
+    std::cout << "save as -> saves all images with custom names\n\n";
+    std::cout << "help -> prints these instructions\n\n";
+    std::cout << "exit -> exits the program\n\n";
+    std::cout << "grayscale -> converts all images in current session to grayscale type\n\n";
+    std::cout << "monochrome -> converts all images in current session to monochrome type\n\n";
+    std::cout << "negative -> converts all images in current session to negatives\n\n";
+    std::cout << "rotate <direction> -> rotates all images in current session in the given direction\n\n";
+    std::cout << "undo -> reverses the last change in current session\n\n";
+    std::cout << "session info -> prints all images and changes in current session\n\n";
+    std::cout << "switch<session ID> -> switches the session with ID <session ID>\n\n";
+    std::cout << "collage<vertical/horizontal> <image1> <image2> <collage name> ->"
+                 " creates a collage of <image1> and <image2> and adds it to the current session\n\n";
 }
