@@ -88,20 +88,17 @@ void Session::resizeSession()
 
 void Session::addImage(char *name)
 {
-        if (fImages == nullptr)
-            fImages = new ImageData[fCapacity];
+    if (fImages == nullptr)
+        fImages = new ImageData[fCapacity];
 
-        if (fSize == fCapacity)
-            resizeSession();
-
-
-        fImages[fSize].loadImage(name);
+    if (fSize == fCapacity)
+        resizeSession();
 
 
-        //if(fImages[fSize].getimagestatst == BROKEN)       TODO!!!!!!
-        //return true;***
+    fImages[fSize].loadImage(name);
 
-    std::cout <<fImages[fSize].getFileName()<< " successfully loaded,  ";
+
+    std::cout << fImages[fSize].getFileName() << " successfully loaded,  ";
     fSize++;
 }
 
@@ -195,7 +192,7 @@ bool Session::isSessionOpen() const
 
 void Session::printSessionInfo() const
 {
-    for(int i=0;i<fSize;i++)
+    for (int i = 0; i < fSize; i++)
     {
         std::cout << fImages[i].getFileName() << "is in Session " << fSessionID << std::endl;
 
@@ -206,6 +203,7 @@ void Session::setSize(unsigned int size)
 {
     fSize = size;
 }
+
 int Session::getSessionID() const
 {
     return fSessionID;
@@ -223,7 +221,7 @@ unsigned int Session::getSize() const
 
 void Session::rotateSessionLeft()
 {
-    for(int i=0;i<fSize;i++)
+    for (int i = 0; i < fSize; i++)
     {
         fImages[i].rotateImageLeft();
     }
@@ -233,16 +231,16 @@ void Session::saveImages()
 {
 
 
-    for(int i=0;i<fSize;i++)
+    for (int i = 0; i < fSize; i++)
     {
-       fImages[i].saveImageToFile(); // TODO !
+        fImages[i].saveImageToFile(); // TODO !
     }
 
 }
 
 void Session::rotateSessionRight()
 {
-    for(int i=0;i<fSize;i++)
+    for (int i = 0; i < fSize; i++)
     {
         fImages[i].rotateImageRight();
     }
@@ -250,7 +248,7 @@ void Session::rotateSessionRight()
 
 void Session::saveImagesAs()
 {
-    for(int i=0;i<fSize;i++)
+    for (int i = 0; i < fSize; i++)
     {
         fImages[i].saveAsImageToFile();
     }
@@ -258,7 +256,7 @@ void Session::saveImagesAs()
 
 void Session::grayscaleSession()
 {
-    for(int i=0;i<fSize;i++)
+    for (int i = 0; i < fSize; i++)
     {
         fImages[i].makeImageGrayscale();
     }
@@ -266,8 +264,45 @@ void Session::grayscaleSession()
 
 void Session::monochromeSession()
 {
-    for(int i=0;i<fSize;i++)
+    for (int i = 0; i < fSize; i++)
     {
         fImages[i].makeImageMonochrome();
     }
+}
+
+void Session::addCollage(const char *image1Name, const char *image2Name, const char *outImageName, bool isVertical)
+{
+    int image1ID = -1;
+    int image2ID = -1;
+    for (int i = 0; i < fSize; i++)
+    {
+        if (strcmp(fImages[i].getFileName(), image1Name) == 0)
+            image1ID = i;
+
+        if (strcmp(fImages[i].getFileName(), image2Name) == 0)
+            image2ID = i;
+    }
+
+    if (image1ID == -1 || image2ID == -1)
+        throw std::exception("Images not found! \n");
+    ImageData tempImage;
+    tempImage.createCollage(fImages[image1ID], fImages[image2ID], outImageName, isVertical);
+
+    fImages[fSize] = tempImage;
+    std::cout << "Collage " << tempImage.getFileName() << " succesfully created and added to current session.\n";
+    fSize++;
+}
+
+void Session::addImage(const ImageData &image)
+{
+    if (fImages == nullptr)
+        fImages = new ImageData[fCapacity];
+
+    if (fSize == fCapacity)
+        resizeSession();
+
+    fImages[fSize] = image;
+
+    std::cout << fImages[fSize].getFileName() << " successfully loaded,  ";
+    fSize++;
 }

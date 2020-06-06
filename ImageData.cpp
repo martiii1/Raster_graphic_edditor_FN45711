@@ -92,12 +92,12 @@ void ImageData::loadImage(char *FileName)
     {
         fFileName = new char[strlen(FileName) + 1];
     }
-    catch (std::bad_alloc&)
+    catch (std::bad_alloc &)
     {
         delImage();
         throw;
     }
-    catch (std::exception&)
+    catch (std::exception &)
     {
         throw std::bad_exception();
     }
@@ -163,7 +163,7 @@ void ImageData::readPBMA(std::ifstream &file)
     getPBMApixels(file);
 
     //std::cout << fFileName << "   " << fImageFormat << "   " << fImageWidth << "   " << fImageHeight << "   "
-    //<< fPixelMaxValue; // TODO !
+    //<< fPixelMaxValue;
 }
 
 void ImageData::readPGMA(std::ifstream &file)
@@ -698,7 +698,8 @@ bool ImageData::grayscaleMatrix()
 
     if (fImageFormat != PPMA)
     {
-        std::cout << "Image " << fFileName << " is already grayscale/monochrome. No changes will be made! " << std::endl;
+        std::cout << "Image " << fFileName << " is already grayscale/monochrome. No changes will be made! "
+                  << std::endl;
         return true;
     }
 
@@ -750,30 +751,29 @@ void ImageData::makeImageMonochrome()
     unsigned short int maxPixelUsed = 0;
     bool imageIsAlreadyMonochrome = true;
 
-    if(fImageFormat == PPMA)
+    if (fImageFormat == PPMA)
     {
         for (int i = 0; i < fImageHeight; i++)
         {
             for (int j = 0; j < tempImageWidth; j += 3)
             {
-                if(maxPixelUsed < fImageMatrix[i][j])
+                if (maxPixelUsed < fImageMatrix[i][j])
                     maxPixelUsed = fImageMatrix[i][j];
             }
         }
     }
 
-    if(fImageFormat == PGMA)
+    if (fImageFormat == PGMA)
     {
         for (int i = 0; i < fImageHeight; i++)
         {
             for (int j = 0; j < fImageWidth; j += 3)
             {
-                if(maxPixelUsed < fImageMatrix[i][j])
+                if (maxPixelUsed < fImageMatrix[i][j])
                     maxPixelUsed = fImageMatrix[i][j];
             }
         }
     }
-
 
 
     for (int i = 0; i < fImageHeight; i++)
@@ -805,10 +805,122 @@ void ImageData::makeImageMonochrome()
 
     }
 
-    if(imageIsAlreadyMonochrome)
+    if (imageIsAlreadyMonochrome)
         std::cout << "The image is .ppma format but is already monochrome. No changes will be made." << std::endl;
     else
         std::cout << "Image " << fFileName << " converted to monochrome. " << std::endl;
 
+}
+
+void ImageData::createCollage(ImageData &image1, ImageData &image2, const char *outImageName, bool isVertical)
+{
+    if (isVertical)
+        collageVerticalMatrix(image1, image2);
+    else
+        collageHorizontalMatrix(image1, image2);
+
+    fFileName = new char[strlen(outImageName) + 5]; // + 1 for \0 and +4 for the ".ppm /.pgm /.pbm"
+
+    strcpy(fFileName, outImageName);
+
+    if (fImageFormat == PPMA)
+        strcat(fFileName, ".ppm");
+
+    if (fImageFormat == PGMA)
+        strcat(fFileName, ".pgm");
+
+    if (fImageFormat == PBMA)
+        strcat(fFileName, ".pbm");
+}
+
+void ImageData::collageVerticalMatrix(ImageData &image1, ImageData &image2)
+{
+    if (image1.fImageFormat != image2.fImageFormat)
+        throw std::exception("These images aren't compatible for a vertical collage! \n");
+
+    if (image1.fImageWidth != image2.fImageWidth)
+        throw std::exception("These images aren't compatible for a vertical collage! \n");
+
+
+    if (image1.fPixelMaxValue > image2.fPixelMaxValue)
+        fPixelMaxValue = image1.fPixelMaxValue;
+    else
+        fPixelMaxValue = image2.fPixelMaxValue;
+
+    fImageFormat = image1.fImageFormat;
+    fImageWidth = image1.fImageWidth;
+    fImageHeight = image1.fImageHeight + image2.fImageHeight;
+
+    if(fImageFormat == PPMA)
+        fImageWidth = fImageWidth * 3;
+
+    fImageMatrix = allocateMatrix(fImageWidth, fImageHeight);
+
+    for (int i = 0; i < image1.fImageHeight; i++)
+    {
+        for (int j = 0; j < fImageWidth; j++)
+        {
+            fImageMatrix[i][j] = image1.fImageMatrix[i][j];
+        }
+    }
+
+    for (unsigned i = image1.fImageHeight; i < fImageHeight; i++)
+    {
+        for (int j = 0; j < fImageWidth; j++)
+        {
+            fImageMatrix[i][j] = image2.fImageMatrix[i - image1.fImageHeight][j];
+        }
+    }
+
+    if(fImageFormat == PPMA)
+        fImageWidth = fImageWidth / 3;
+
+}
+
+void ImageData::collageHorizontalMatrix(ImageData &image1, ImageData &image2)
+{
+    if (image1.fImageFormat != image2.fImageFormat)
+        throw std::exception("These images aren't compatible for a vertical collage! \n");
+
+    if (image1.fImageHeight != image2.fImageHeight)
+        throw std::exception("These images aren't compatible for a vertical collage! \n");
+
+
+    if (image1.fPixelMaxValue > image2.fPixelMaxValue)
+        fPixelMaxValue = image1.fPixelMaxValue;
+    else
+        fPixelMaxValue = image2.fPixelMaxValue;
+
+    fImageFormat = image1.fImageFormat;
+    fImageHeight = image1.fImageHeight;
+    fImageWidth = image1.fImageWidth + image2.fImageWidth;
+
+    unsigned int tempImage1MatrixWidth = image1.fImageWidth;
+    unsigned int tempImage2MatrixWidth = image2.fImageWidth;
+
+    if(fImageFormat == PPMA)
+    {
+        fImageWidth = fImageWidth * 3;
+        tempImage1MatrixWidth = tempImage1MatrixWidth * 3;
+        tempImage2MatrixWidth = tempImage2MatrixWidth * 3;
+    }
+
+    fImageMatrix = allocateMatrix(fImageWidth, fImageHeight);
+
+    for (int i = 0; i < image1.fImageHeight; i++)
+    {
+        for (int j = 0; j < tempImage1MatrixWidth; j++)
+        {
+            fImageMatrix[i][j] = image1.fImageMatrix[i][j];
+        }
+
+        for (unsigned j = tempImage1MatrixWidth; j < fImageWidth; j++)
+        {
+            fImageMatrix[i][j] = image2.fImageMatrix[i][j - tempImage1MatrixWidth];
+        }
+    }
+
+    if(fImageFormat == PPMA)
+        fImageWidth = fImageWidth / 3;
 }
 

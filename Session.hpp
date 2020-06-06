@@ -21,6 +21,8 @@ public:
 
     void addImage(char *name);
 
+    void addImage(const ImageData &image);
+
     void setOpen();
 
     void setClose();
@@ -30,7 +32,6 @@ public:
     void setSize(unsigned int size);
 
     void setNumberOfChanges(unsigned short int newNumber);
-
 
     int getSessionID() const;
 
@@ -53,6 +54,10 @@ public:
     void grayscaleSession();
 
     void monochromeSession();
+
+    //void negativeSession();
+
+    void addCollage(const char *image1Name, const char *image2Name, const char *outImageName, bool isVertical);
 
 private:
     unsigned int fSize;

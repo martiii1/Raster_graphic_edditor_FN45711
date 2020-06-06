@@ -30,9 +30,11 @@ private:
 
     void saveImagesAsInCurrentSession();
 
-    bool add(char *input);
+    void add(char *input);
 
-    bool switchSession(int sessionID);
+    void switchSession(int sessionID);
+
+    void collage(char* input);
 
     void rotateLeft();
 
