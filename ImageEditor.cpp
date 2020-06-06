@@ -31,9 +31,6 @@ void ImageEditor::newSession()
 
     for (size_t i = 0; i < fNextSession; i++)
     {
-        if (!fSessions[i].isSessionOpen())
-            continue;
-
         tempSessions[i] = fSessions[i];
         fSessions[i].~Session();
     }
@@ -41,7 +38,6 @@ void ImageEditor::newSession()
 
     fSessions = tempSessions;
     fSessions[fNextSession].setSize(0);
-    fSessions[fNextSession].setOpen();
     fSessions[fNextSession].setSessionID(fNextSession);
 
     std::cout << std::endl << std::endl << "Session with ID:" << fSessions[fNextSession].getSessionID()
@@ -88,11 +84,12 @@ void ImageEditor::CommandCaller()
             if (strcmp(token, "monochrome") == 0)   // monochrome is called
                 monochromeCurrentSession();
 
+
             if (strcmp(token, "negative") == 0)     // negative is called
             {
 
-
             }
+
 
             if (strcmp(token, "rotate") == 0)       // rotate is called
             {
@@ -112,26 +109,34 @@ void ImageEditor::CommandCaller()
                 {
                     throw std::invalid_argument(invalidInputErrorMessage);
                 }
-
-
             }
+
 
             if (strcmp(token, "undo") == 0)         // undo is called
-            {
+                fSessions[fCurrentSession].undoLastChange();
 
-
-            }
 
             if (strcmp(token, "add") == 0)          // add is called
-            {
                 add(consoleCommandsLine);
-            }
+
 
             if (strcmp(token, "session") == 0)      // session is called
             {
+                token = strtok(nullptr, " ");
 
+                if (token == nullptr)
+                    throw std::exception(invalidInputErrorMessage);
 
+                if (strcmp(token, "info") == 0)       // rotate left
+                {
+                    fSessions[fCurrentSession].printSessionInfo();
+                }
+                else
+                {
+                    throw std::exception(invalidInputErrorMessage);
+                }
             }
+
 
             if (strcmp(token, "switch") == 0)       // switch is called
             {
@@ -143,10 +148,11 @@ void ImageEditor::CommandCaller()
                 switchSession(atoi(token));
             }
 
+
             if (strcmp(token, "collage") == 0)      // collage  is called
-            {
                 collage(consoleCommandsLine);
-            }
+
+
 
             if (strcmp(token, "close") == 0)        // close  is called
             {
@@ -171,21 +177,15 @@ void ImageEditor::CommandCaller()
                 {
                     throw std::invalid_argument(invalidInputErrorMessage);
                 }
-
-
             }
+
 
             if (strcmp(token, "help") == 0)
-            {
                 showAllSessions();
 
-            }
 
             if (strcmp(token, "exit") == 0)
-            {
                 endOfProgram = true;
-            }
-
         }
         catch (std::exception &)
         {
@@ -197,7 +197,6 @@ void ImageEditor::CommandCaller()
 
     delete[] consoleCommandsLine;
     delete[] consoleCommands;
-
 }
 
 void ImageEditor::handle_exception()
@@ -273,11 +272,7 @@ void ImageEditor::showAllSessions()
 
     while (counter < fNextSession)
     {
-        if (fSessions[counter].isSessionOpen())
-        {
-            fSessions[counter].printSessionInfo();
-        }
-
+        fSessions[counter].printSessionInfo();
         counter++;
     }
 

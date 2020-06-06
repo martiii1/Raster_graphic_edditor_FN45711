@@ -7,7 +7,8 @@
 void Session::copyFunc(const Session &other)
 {
     fImages = new(std::nothrow) ImageData[other.fSize];
-    fChangesMade = new(std::nothrow) char *[other.fNumberOfChanges];
+    fImagesPrevious = new(std::nothrow) ImageData[other.fSize];
+    fChangesMade = new(std::nothrow) char *[other.fNumberOfChangesCapacity];
 
     if (fImages == nullptr || fChangesMade == nullptr)
     {
@@ -32,11 +33,13 @@ void Session::copyFunc(const Session &other)
     for (unsigned int i = 0; i < other.fSize; i++)
     {
         fImages[i] = other.fImages[i];
+        fImagesPrevious[i] = other.fImages[i];
     }
 
     fSize = other.fSize;
     fSessionID = other.fSessionID;
     fNumberOfChanges = other.fNumberOfChanges;
+    fNumberOfChangesCapacity = other.fNumberOfChangesCapacity;
     fCapacity = other.fCapacity;
     fSessionIsOpen = other.fSessionIsOpen;
 }
@@ -45,13 +48,17 @@ void Session::copyFunc(const Session &other)
 void Session::delMem()
 {
     for (unsigned int i = 0; i < fSize; i++)
+    {
         fImages[i].~ImageData();
+        fImagesPrevious[i].~ImageData();
+    }
 
     for (int i = 0; i < fNumberOfChanges; i++)
         delete[] fChangesMade[i];
 
     delete[] fChangesMade;
     delete[] fImages;
+    delete[] fImagesPrevious;
 }
 
 void Session::changesInitializer()
@@ -74,16 +81,21 @@ void Session::changesInitializer()
 void Session::resizeSession()
 {
     ImageData *tempImages = new ImageData[fCapacity * 2];
+    ImageData *tempImagesPrevious = new ImageData[fCapacity * 2];
 
     fCapacity = fCapacity * 2;
 
     for (unsigned int i = 0; i < fSize; i++)
     {
         tempImages[i] = fImages[i];
+        tempImagesPrevious[i] = fImagesPrevious[i];
+
         fImages[i].delImage();
+        fImagesPrevious[i].delImage();
     }
 
     fImages = tempImages;
+    fImagesPrevious = tempImagesPrevious;
 }
 
 void Session::addImage(char *name)
@@ -109,36 +121,13 @@ Session::Session()
     fSessionID = -1;
     fChangesMade = nullptr;
     fNumberOfChanges = 0;
+    fNumberOfChangesCapacity = 0;
     fCapacity = initialCapacity;
     fImages = nullptr;
+    fImagesPrevious = nullptr;
     fSessionIsOpen = false;
 }
 
-//Session::Session(char* imageNames) //////////////////////////////////////////////////// WTF
-//{
-//    fCapacity = initialCapacity;
-//    fImages = new (std::nothrow) ImageData[fCapacity];
-//    fSessionID = -1;
-//
-//    if (fImages == nullptr)
-//    {
-//        std::cout << "Error while allocating memory, deleting session! " << std::endl;
-//        delMem();
-//        return;
-//    }
-//
-//
-//    char* token = strtok(imageNames, " ");
-//    if (strcmp(token, "load") == 0)
-//        token = strtok(NULL, " ");
-//
-//    while (token != nullptr)
-//    {
-//        addImage(token);
-//        token = strtok(nullptr, " "); /// MAYBE VALIDATE FILE NAMES
-//    }
-//
-//}
 
 Session::Session(const Session &other)
 {
@@ -159,25 +148,8 @@ Session &Session::operator=(const Session other)
 
 Session::~Session()
 {
-    //std::cout << "Current Session Destruct \n";
-
-    /*if (fImages != nullptr)
-        for (unsigned int i = 0; i < fSize; i++) // FIXED!
-        {
-            fImages[i].~ImageData();
-        }*/
-
     delete[] fImages;
-}
-
-void Session::setOpen()
-{
-    fSessionIsOpen = true;
-}
-
-void Session::setClose()
-{
-    fSessionIsOpen = false;
+    delete[] fImagesPrevious;
 }
 
 void Session::setSessionID(int newID)
@@ -185,18 +157,24 @@ void Session::setSessionID(int newID)
     fSessionID = newID;
 }
 
-bool Session::isSessionOpen() const
-{
-    return fSessionIsOpen;
-}
-
 void Session::printSessionInfo() const
 {
+    std::cout << "Session with ID: " << fSessionID << std::endl;
+    std::cout << "The session contains the following images: " << std::endl;
+
     for (int i = 0; i < fSize; i++)
     {
-        std::cout << fImages[i].getFileName() << "is in Session " << fSessionID << std::endl;
-
+        std::cout << fImages[i].getFileName() << " ," << std::endl;
     }
+
+    std::cout << std::endl;
+
+    std::cout << "The following changes are made so far: " << std::endl;
+    for (int i = 0; i < fNumberOfChanges; i++)
+    {
+        std::cout << fChangesMade[i] << std::endl;
+    }
+
 }
 
 void Session::setSize(unsigned int size)
@@ -223,8 +201,10 @@ void Session::rotateSessionLeft()
 {
     for (int i = 0; i < fSize; i++)
     {
+        fImagesPrevious[i] = fImages[i];
         fImages[i].rotateImageLeft();
     }
+    addNewChange("Images rotated left");
 }
 
 void Session::saveImages()
@@ -242,8 +222,10 @@ void Session::rotateSessionRight()
 {
     for (int i = 0; i < fSize; i++)
     {
+        fImagesPrevious[i] = fImages[i];
         fImages[i].rotateImageRight();
     }
+    addNewChange("Images rotated right");
 }
 
 void Session::saveImagesAs()
@@ -258,16 +240,20 @@ void Session::grayscaleSession()
 {
     for (int i = 0; i < fSize; i++)
     {
+        fImagesPrevious[i] = fImages[i];
         fImages[i].makeImageGrayscale();
     }
+    addNewChange("Images converted to grayscale");
 }
 
 void Session::monochromeSession()
 {
     for (int i = 0; i < fSize; i++)
     {
+        fImagesPrevious[i] = fImages[i];
         fImages[i].makeImageMonochrome();
     }
+    addNewChange("Images converted to monochrome");
 }
 
 void Session::addCollage(const char *image1Name, const char *image2Name, const char *outImageName, bool isVertical)
@@ -293,16 +279,56 @@ void Session::addCollage(const char *image1Name, const char *image2Name, const c
     fSize++;
 }
 
-void Session::addImage(const ImageData &image)
+void Session::setNumberOfChanges(unsigned short newNumber)
 {
-    if (fImages == nullptr)
-        fImages = new ImageData[fCapacity];
+    fNumberOfChanges = newNumber;
+}
 
-    if (fSize == fCapacity)
-        resizeSession();
+unsigned short int Session::getNumberOfChanges()
+{
+    return fNumberOfChanges;
+}
 
-    fImages[fSize] = image;
+unsigned short int Session::addNewChange(const char *change)
+{
+    if (fChangesMade == nullptr)
+        fChangesMade = new char *[fNumberOfChangesCapacity];
 
-    std::cout << fImages[fSize].getFileName() << " successfully loaded,  ";
-    fSize++;
+    if (fNumberOfChanges <= fNumberOfChangesCapacity - 1)
+    {
+        char **fChangesMadeTemp = new char *[fNumberOfChangesCapacity * 2];
+        for (int i = 0; i < fNumberOfChanges; i++)
+        {
+            fChangesMadeTemp[i] = new char[strlen(fChangesMade[i]) + 1];
+            strcpy(fChangesMadeTemp[i], fChangesMade[i]);
+            delete[] fChangesMade[i];
+        }
+        delete[] fChangesMade;
+
+        fChangesMade = fChangesMadeTemp;
+
+        fNumberOfChangesCapacity = fNumberOfChanges * 2;
+    }
+
+    fChangesMade[fNumberOfChanges] = new char[strlen(change) + 1];
+    strcpy(fChangesMade[fNumberOfChanges], change);
+
+    fNumberOfChanges++;
+}
+
+unsigned short int Session::removeLastChange()
+{
+    delete[] fChangesMade[fNumberOfChanges - 1];
+    fNumberOfChanges--;
+}
+
+void Session::undoLastChange()
+{
+    for (int i = 0; i < fSize; i++)
+    {
+        fImages[i] = fImagesPrevious[i];
+    }
+
+    std::cout << "The last change ( " << fChangesMade[fNumberOfChanges-1] << " ) is reversed! \n";
+    removeLastChange();
 }

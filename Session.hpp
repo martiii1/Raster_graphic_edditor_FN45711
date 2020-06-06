@@ -21,17 +21,13 @@ public:
 
     void addImage(char *name);
 
-    void addImage(const ImageData &image);
-
-    void setOpen();
-
-    void setClose();
-
     void setSessionID(int newID);
 
     void setSize(unsigned int size);
 
     void setNumberOfChanges(unsigned short int newNumber);
+
+    unsigned short int getNumberOfChanges();
 
     int getSessionID() const;
 
@@ -39,7 +35,9 @@ public:
 
     unsigned short int getNumberOfChanges() const;
 
-    bool isSessionOpen() const;
+    unsigned short int addNewChange(const char* change);
+
+    unsigned short int removeLastChange();
 
     void printSessionInfo() const;
 
@@ -55,6 +53,8 @@ public:
 
     void monochromeSession();
 
+    void undoLastChange();
+
     //void negativeSession();
 
     void addCollage(const char *image1Name, const char *image2Name, const char *outImageName, bool isVertical);
@@ -62,11 +62,14 @@ public:
 private:
     unsigned int fSize;
     int fSessionID;
-    char **fChangesMade;
-    unsigned short int fNumberOfChanges;
     unsigned int fCapacity;
     ImageData *fImages;
+    ImageData *fImagesPrevious;
     bool fSessionIsOpen;
+
+    char **fChangesMade;
+    unsigned short int fNumberOfChanges;
+    unsigned short int fNumberOfChangesCapacity;
 
 
     void copyFunc(const Session &other);
