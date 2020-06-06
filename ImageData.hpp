@@ -43,9 +43,6 @@ public:
 
     void writeMatrixToFile(std::ofstream &file);
 
-
-
-
     void rotateImageLeft();
 
     void rotateImageRight();
