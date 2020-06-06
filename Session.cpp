@@ -103,11 +103,16 @@ void Session::addImage(char *name)
     if (fImages == nullptr)
         fImages = new ImageData[fCapacity];
 
+    if (fImagesPrevious == nullptr)
+        fImagesPrevious = new ImageData[fCapacity];
+
     if (fSize == fCapacity)
         resizeSession();
 
 
     fImages[fSize].loadImage(name);
+
+    fImagesPrevious[fSize] = fImages[fSize];
 
 
     std::cout << fImages[fSize].getFileName() << " successfully loaded,  ";
@@ -289,7 +294,7 @@ unsigned short int Session::getNumberOfChanges()
     return fNumberOfChanges;
 }
 
-unsigned short int Session::addNewChange(const char *change)
+void Session::addNewChange(const char *change)
 {
     if (fChangesMade == nullptr)
         fChangesMade = new char *[fNumberOfChangesCapacity];
@@ -316,7 +321,7 @@ unsigned short int Session::addNewChange(const char *change)
     fNumberOfChanges++;
 }
 
-unsigned short int Session::removeLastChange()
+void Session::removeLastChange()
 {
     delete[] fChangesMade[fNumberOfChanges - 1];
     fNumberOfChanges--;

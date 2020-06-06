@@ -35,9 +35,9 @@ public:
 
     unsigned short int getNumberOfChanges() const;
 
-    unsigned short int addNewChange(const char* change);
+    void addNewChange(const char* change);
 
-    unsigned short int removeLastChange();
+    void removeLastChange();
 
     void printSessionInfo() const;
 
