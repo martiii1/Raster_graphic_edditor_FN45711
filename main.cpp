@@ -6,8 +6,8 @@
 
 int main()
 {
-    ImageEditor asd;
-    asd.StartImageEditor();
+    ImageEditor imageEditor1;
+    imageEditor1.StartImageEditor();
 
     return 0;
 }

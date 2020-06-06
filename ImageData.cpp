@@ -273,7 +273,6 @@ void ImageData::getPBMApixels(std::ifstream &file)
 
 void ImageData::getPGMApixels(std::ifstream &file)
 {
-
     char c;
     unsigned int pixel;
     unsigned int row = 0, col = 0;
@@ -317,6 +316,7 @@ void ImageData::getPGMApixels(std::ifstream &file)
     }
 }
 
+
 void ImageData::getPPMApixels(std::ifstream &file)
 {
     char c;
@@ -345,7 +345,6 @@ void ImageData::getPPMApixels(std::ifstream &file)
                     break;
 
                 col = 0;
-                //std::cout << std::endl; // DELETE COUT
             }
         }
         else if (c == ' ' || c == '\n') // Ignores whitespaces
@@ -358,9 +357,9 @@ void ImageData::getPPMApixels(std::ifstream &file)
             delImage();
             return;
         }
-
     }
 }
+
 
 size_t ImageData::getImageFormat(std::ifstream &file)
 {
@@ -379,6 +378,7 @@ size_t ImageData::getImageFormat(std::ifstream &file)
 
     return (temp[1] - '0');
 }
+
 
 void ImageData::skipComments(std::ifstream &file)
 {
@@ -406,6 +406,7 @@ void ImageData::skipComments(std::ifstream &file)
     file.putback(c);
 }
 
+
 int **ImageData::allocateMatrix(unsigned int width, unsigned int height)
 {
     int **Matrix = new int *[height];
@@ -430,13 +431,13 @@ int **ImageData::allocateMatrix(unsigned int width, unsigned int height)
     return Matrix;
 }
 
+
 void ImageData::rotateImageLeft()
 {
     int **tempNewMatrix;
 
     unsigned int tempWidth;
     unsigned int tempHeight;
-
 
     if (fImageFormat == PPMA)
     {
@@ -485,8 +486,8 @@ void ImageData::rotateImageLeft()
     fImageHeight = tempWidth;
 
     fImageMatrix = tempNewMatrix;
-
 }
+
 
 void ImageData::deleteImageMatrix(unsigned int width, unsigned int height)
 {
@@ -496,25 +497,30 @@ void ImageData::deleteImageMatrix(unsigned int width, unsigned int height)
     delete[] fImageMatrix;
 }
 
+
 unsigned short int ImageData::getImageFormat() const
 {
     return fImageFormat;
 }
+
 
 unsigned int ImageData::getImageWidth() const
 {
     return fImageWidth;
 }
 
+
 unsigned int ImageData::getImageHeight() const
 {
     return fImageHeight;
 }
 
+
 unsigned int ImageData::getPixelMaxValues() const
 {
     return fPixelMaxValue;
 }
+
 
 void ImageData::writeMatrixToFile(std::ofstream &file)
 {
@@ -544,13 +550,11 @@ void ImageData::writeMatrixToFile(std::ofstream &file)
             file << fImageMatrix[i][j] << " ";
             counter++;
         }
-
-        //file << std::endl;
     }
 }
 
-#define TempImageName "tempImageFile.txt"
 
+#define TempImageName "tempImageFile.txt"
 void ImageData::saveImageToFile()
 {
     std::ofstream writefile;
@@ -622,7 +626,6 @@ void ImageData::rotateImageRight()
                 tempNewMatrix[i][j] = fImageMatrix[fImageHeight - j - 1][i]; // -1 because [][] starts at 00
             }
         }
-
     }
 
     deleteImageMatrix(fImageWidth, fImageHeight);
@@ -631,10 +634,9 @@ void ImageData::rotateImageRight()
     fImageHeight = tempWidth;
 
     fImageMatrix = tempNewMatrix;
-
 }
 
-void ImageData::saveAsImageToFile() // TODO add a check for forbidden symbols in the filename!
+void ImageData::saveAsImageToFile()
 {
     std::ofstream writefile;
     char tempNewName[MAX_FILE_NAME_SIZE];
@@ -667,6 +669,7 @@ void ImageData::saveAsImageToFile() // TODO add a check for forbidden symbols in
     rename(TempImageName, tempNewName);
 }
 
+
 void ImageData::makeImageGrayscale()
 {
     bool imageIsAlreadyGrayscale;
@@ -681,8 +684,8 @@ void ImageData::makeImageGrayscale()
         std::cout << "Image " << fFileName << " is already grayscale. No changes will be made!" << std::endl;
         return;
     }
-
 }
+
 
 bool ImageData::grayscaleMatrix()
 {
@@ -724,9 +727,9 @@ bool ImageData::grayscaleMatrix()
 
         }
     }
-
     return !imageIsAlreadyGrayscale;
 }
+
 
 void ImageData::makeImageMonochrome()
 {
@@ -808,6 +811,7 @@ void ImageData::makeImageMonochrome()
         std::cout << "The image is .ppma format but is already monochrome. No changes will be made." << std::endl;
 }
 
+
 void ImageData::createCollage(ImageData &image1, ImageData &image2, const char *outImageName, bool isVertical)
 {
     if (isVertical)
@@ -828,6 +832,7 @@ void ImageData::createCollage(ImageData &image1, ImageData &image2, const char *
     if (fImageFormat == PBMA)
         strcat(fFileName, ".pbm");
 }
+
 
 void ImageData::collageVerticalMatrix(ImageData &image1, ImageData &image2)
 {
@@ -870,8 +875,8 @@ void ImageData::collageVerticalMatrix(ImageData &image1, ImageData &image2)
 
     if (fImageFormat == PPMA)
         fImageWidth = fImageWidth / 3;
-
 }
+
 
 void ImageData::collageHorizontalMatrix(ImageData &image1, ImageData &image2)
 {
@@ -919,6 +924,7 @@ void ImageData::collageHorizontalMatrix(ImageData &image1, ImageData &image2)
     if (fImageFormat == PPMA)
         fImageWidth = fImageWidth / 3;
 }
+
 
 void ImageData::makeImageNegative()
 {

@@ -314,11 +314,6 @@ void ImageEditor::monochromeCurrentSession()
     fSessions[fCurrentSession].monochromeSession();
 }
 
-void ImageEditor::rotateImage()
-{
-
-}
-
 void ImageEditor::collage(char *input)
 {
     const char *invalidImageName = "You have to specify a valid image name! \n";
@@ -377,8 +372,6 @@ void ImageEditor::collage(char *input)
         delete [] tempOutImageName;
         throw;
     }
-
-
 }
 
 void ImageEditor::negativeCurrentSession()

@@ -82,6 +82,7 @@ void Session::resizeSession()
     fImagesPrevious = tempImagesPrevious;
 }
 
+
 void Session::addImage(char *name)
 {
     if (fImages == nullptr)
@@ -131,9 +132,9 @@ Session &Session::operator=(const Session other)
         delMem();
         copyFunc(other);
     }
-
     return *this;
 }
+
 
 Session::~Session()
 {
@@ -141,10 +142,12 @@ Session::~Session()
     delete[] fImagesPrevious;
 }
 
+
 void Session::setSessionID(int newID)
 {
     fSessionID = newID;
 }
+
 
 void Session::printSessionInfo() const
 {
@@ -163,28 +166,32 @@ void Session::printSessionInfo() const
     {
         std::cout << fChangesMade[i] << std::endl;
     }
-
 }
+
 
 void Session::setSize(unsigned int size)
 {
     fSize = size;
 }
 
+
 int Session::getSessionID() const
 {
     return fSessionID;
 }
+
 
 unsigned short int Session::getNumberOfChanges() const
 {
     return fNumberOfChanges;
 }
 
+
 unsigned int Session::getSize() const
 {
     return fSize;
 }
+
 
 void Session::rotateSessionLeft()
 {
@@ -197,16 +204,15 @@ void Session::rotateSessionLeft()
     std::cout << "All images rotated left. \n";
 }
 
+
 void Session::saveImages()
 {
-
-
     for (int i = 0; i < fSize; i++)
     {
         fImages[i].saveImageToFile();
     }
-
 }
+
 
 void Session::rotateSessionRight()
 {
@@ -219,6 +225,7 @@ void Session::rotateSessionRight()
     std::cout << "All images rotated right. \n";
 }
 
+
 void Session::saveImagesAs()
 {
     for (int i = 0; i < fSize; i++)
@@ -226,6 +233,7 @@ void Session::saveImagesAs()
         fImages[i].saveAsImageToFile();
     }
 }
+
 
 void Session::grayscaleSession()
 {
@@ -238,6 +246,7 @@ void Session::grayscaleSession()
     std::cout << "All images converted to grayscale. \n";
 }
 
+
 void Session::monochromeSession()
 {
     for (int i = 0; i < fSize; i++)
@@ -248,6 +257,7 @@ void Session::monochromeSession()
     addNewChange("Images converted to monochrome");
     std::cout << "All images converted to monochrome. \n";
 }
+
 
 void Session::addCollage(const char *image1Name, const char *image2Name, const char *outImageName, bool isVertical)
 {
@@ -272,15 +282,18 @@ void Session::addCollage(const char *image1Name, const char *image2Name, const c
     fSize++;
 }
 
+
 void Session::setNumberOfChanges(unsigned short newNumber)
 {
     fNumberOfChanges = newNumber;
 }
 
+
 unsigned short int Session::getNumberOfChanges()
 {
     return fNumberOfChanges;
 }
+
 
 void Session::addNewChange(const char *change)
 {
@@ -309,11 +322,13 @@ void Session::addNewChange(const char *change)
     fNumberOfChanges++;
 }
 
+
 void Session::removeLastChange()
 {
     delete[] fChangesMade[fNumberOfChanges - 1];
     fNumberOfChanges--;
 }
+
 
 void Session::undoLastChange()
 {
@@ -322,9 +337,10 @@ void Session::undoLastChange()
         fImages[i] = fImagesPrevious[i];
     }
 
-    std::cout << "The last change ( " << fChangesMade[fNumberOfChanges-1] << " ) is reversed! \n";
+    std::cout << "The last change ( " << fChangesMade[fNumberOfChanges - 1] << " ) is reversed! \n";
     removeLastChange();
 }
+
 
 void Session::negativeSession()
 {
@@ -335,5 +351,4 @@ void Session::negativeSession()
     }
     addNewChange("Images converted to negatives");
     std::cout << "All images converted to negatives. \n";
-
 }

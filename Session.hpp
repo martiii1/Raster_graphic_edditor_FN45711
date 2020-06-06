@@ -1,5 +1,4 @@
 #pragma once
-
 #include "ImageData.hpp"
 
 #define CHANGES_BUFFER 10
