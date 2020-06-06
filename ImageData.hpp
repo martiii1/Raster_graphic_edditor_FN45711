@@ -44,8 +44,7 @@ public:
     void writeMatrixToFile(std::ofstream &file);
 
 
-    //char* fImageComments;
-    int **fImageMatrix; // unsigned TODO
+
 
     void rotateImageLeft();
 
@@ -68,6 +67,7 @@ public:
     void collageHorizontalMatrix(ImageData &image1, ImageData &image2);
 
 private:
+    int **fImageMatrix;
     char *fFileName;
     unsigned short int fImageFormat;
     unsigned int fImageWidth;
