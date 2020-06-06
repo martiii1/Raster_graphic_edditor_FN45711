@@ -210,6 +210,7 @@ void Session::rotateSessionLeft()
         fImages[i].rotateImageLeft();
     }
     addNewChange("Images rotated left");
+    std::cout << "All images rotated left. \n";
 }
 
 void Session::saveImages()
@@ -231,6 +232,7 @@ void Session::rotateSessionRight()
         fImages[i].rotateImageRight();
     }
     addNewChange("Images rotated right");
+    std::cout << "All images rotated right. \n";
 }
 
 void Session::saveImagesAs()
@@ -249,6 +251,7 @@ void Session::grayscaleSession()
         fImages[i].makeImageGrayscale();
     }
     addNewChange("Images converted to grayscale");
+    std::cout << "All images converted to grayscale. \n";
 }
 
 void Session::monochromeSession()
@@ -259,6 +262,7 @@ void Session::monochromeSession()
         fImages[i].makeImageMonochrome();
     }
     addNewChange("Images converted to monochrome");
+    std::cout << "All images converted to monochrome. \n";
 }
 
 void Session::addCollage(const char *image1Name, const char *image2Name, const char *outImageName, bool isVertical)
@@ -280,7 +284,7 @@ void Session::addCollage(const char *image1Name, const char *image2Name, const c
     tempImage.createCollage(fImages[image1ID], fImages[image2ID], outImageName, isVertical);
 
     fImages[fSize] = tempImage;
-    std::cout << "Collage " << tempImage.getFileName() << " succesfully created and added to current session.\n";
+    std::cout << "Collage " << tempImage.getFileName() << " successfully created and added to current session.\n";
     fSize++;
 }
 

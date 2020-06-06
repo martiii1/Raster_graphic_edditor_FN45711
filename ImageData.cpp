@@ -149,7 +149,6 @@ void ImageData::delImage()
 
     delete[] fFileName;
     delete[] fImageMatrix;
-    fImageFormat = BROKEN;
 }
 
 void ImageData::readPBMA(std::ifstream &file)
@@ -672,9 +671,7 @@ void ImageData::makeImageGrayscale()
 
     if (fImageFormat == PPMA)
     {
-        if (grayscaleMatrix())
-            std::cout << "Image " << fFileName << " converted to grayscale. " << std::endl;
-        else
+        if (!grayscaleMatrix())
             std::cout << "The image is .ppma format but is already grayscale. No changes will be made." << std::endl;
     }
     else
@@ -807,9 +804,6 @@ void ImageData::makeImageMonochrome()
 
     if (imageIsAlreadyMonochrome)
         std::cout << "The image is .ppma format but is already monochrome. No changes will be made." << std::endl;
-    else
-        std::cout << "Image " << fFileName << " converted to monochrome. " << std::endl;
-
 }
 
 void ImageData::createCollage(ImageData &image1, ImageData &image2, const char *outImageName, bool isVertical)
@@ -851,7 +845,7 @@ void ImageData::collageVerticalMatrix(ImageData &image1, ImageData &image2)
     fImageWidth = image1.fImageWidth;
     fImageHeight = image1.fImageHeight + image2.fImageHeight;
 
-    if(fImageFormat == PPMA)
+    if (fImageFormat == PPMA)
         fImageWidth = fImageWidth * 3;
 
     fImageMatrix = allocateMatrix(fImageWidth, fImageHeight);
@@ -872,7 +866,7 @@ void ImageData::collageVerticalMatrix(ImageData &image1, ImageData &image2)
         }
     }
 
-    if(fImageFormat == PPMA)
+    if (fImageFormat == PPMA)
         fImageWidth = fImageWidth / 3;
 
 }
@@ -898,7 +892,7 @@ void ImageData::collageHorizontalMatrix(ImageData &image1, ImageData &image2)
     unsigned int tempImage1MatrixWidth = image1.fImageWidth;
     unsigned int tempImage2MatrixWidth = image2.fImageWidth;
 
-    if(fImageFormat == PPMA)
+    if (fImageFormat == PPMA)
     {
         fImageWidth = fImageWidth * 3;
         tempImage1MatrixWidth = tempImage1MatrixWidth * 3;
@@ -920,7 +914,7 @@ void ImageData::collageHorizontalMatrix(ImageData &image1, ImageData &image2)
         }
     }
 
-    if(fImageFormat == PPMA)
+    if (fImageFormat == PPMA)
         fImageWidth = fImageWidth / 3;
 }
 
